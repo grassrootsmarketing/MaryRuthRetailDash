@@ -1216,24 +1216,80 @@ const ch26m={
   'Feb':[{name:'Whole Foods',events:132,revenue:28203.09},{name:'Sprouts',events:104,revenue:12280.84},{name:'Central Market',events:8,revenue:915.55},{name:'Erewhon',events:12,revenue:680.74},{name:'Independents',events:11,revenue:607.77}]
 };
 
+// Shared state for month filtering (populated from hardcoded data or uploads)
+window._dashState={
+  months:M26,
+  monthly:Object.fromEntries(M26.map((m,i)=>([m,{ev:d26.ev[i],sa:d26.sa[i],un:d26.un[i],sh:d26.sh[i]}]))),
+  chainMonthly:mc26,
+  byChain:Object.fromEntries(ch26.map(c=>[c.name,{ev:c.events,rev:c.revenue}])),
+  byState:Object.fromEntries(st26.map(s=>[s.s,{ev:s.e,rev:s.r}])),
+  byRegion:Object.fromEntries(rg26.map(r=>[r.name,r.events])),
+  netUn:netUn26,
+  ch26m:ch26m,st26m:st26m,rg26m:rg26m,
+  ch26:ch26,st26:st26,rg26:rg26
+};
+
 function setMonth26(mo){
-  // Update button states
+  const S=window._dashState;
   document.querySelectorAll('#monthBar26 .mo-btn').forEach(b=>b.classList.remove('active'));
   const btn=document.querySelector('#monthBar26 .mo-btn[onclick*="\''+mo+'\'"]');
   if(btn)btn.classList.add('active');
   
-  let ev,sa,un,sh,cn,netUn,chData,stData,rgData,totalEv;
+  let ev,sa,un,sh,netUn,chData,stData,rgData,totalEv;
+  const chains=['Whole Foods','Sprouts','Central Market','Erewhon','Independents'];
+  const rgColors={'West':'#ED1C24','Central':'#F97316','Southeast':'#FACC15','Southwest':'#22C55E','Atlantic':'#3B82F6'};
   
   if(mo==='YTD'){
-    ev=d26.ev.reduce((a,b)=>a+b,0);sa=d26.sa.reduce((a,b)=>a+b,0);un=d26.un.reduce((a,b)=>a+b,0);sh=d26.sh.reduce((a,b)=>a+b,0);
-    netUn=netUn26.reduce((a,b)=>a+b,0);
-    chData=ch26;stData=st26;rgData=rg26;totalEv=ev;
+    ev=0;sa=0;un=0;sh=0;netUn=0;
+    S.months.forEach((m,i)=>{
+      const md=S.monthly[m];if(!md)return;
+      ev+=md.ev;sa+=md.sa;un+=md.un;sh+=md.sh;
+      netUn+=(S.netUn&&S.netUn[i])?S.netUn[i]:Math.round(md.un*0.87);
+    });
+    totalEv=ev;
+    // Use YTD aggregates
+    chData=chains.map(ch=>{const d=S.byChain[ch]||{ev:0,rev:0};return{name:ch,events:d.ev,revenue:d.rev};}).filter(x=>x.events>0).sort((a,b)=>b.revenue-a.revenue);
+    stData=Object.entries(S.byState).filter(x=>x[0]).map(([s,d])=>({s,e:d.ev,r:d.rev})).sort((a,b)=>b.e-a.e);
+    rgData=Object.entries(S.byRegion).map(([name,events])=>({name,events,color:rgColors[name]||'#666'})).sort((a,b)=>b.events-a.events);
   }else{
-    const i=M26.indexOf(mo);
+    const i=S.months.indexOf(mo);
     if(i<0)return;
-    ev=d26.ev[i];sa=d26.sa[i];un=d26.un[i];sh=d26.sh[i];
-    netUn=netUn26[i];
-    chData=ch26m[mo]||ch26;stData=st26m[mo]||st26;rgData=rg26m[mo]||rg26;totalEv=ev;
+    const md=S.monthly[mo];if(!md)return;
+    ev=md.ev;sa=md.sa;un=md.un;sh=md.sh;
+    netUn=(S.netUn&&S.netUn[i])?S.netUn[i]:Math.round(un*0.87);
+    totalEv=ev;
+    
+    // Per-month chain data
+    if(S.ch26m&&S.ch26m[mo]){
+      chData=S.ch26m[mo];
+    }else{
+      // Build from chainMonthly
+      chData=chains.map(ch=>{
+        const evts=(S.chainMonthly[ch]&&S.chainMonthly[ch][mo])||0;
+        // Estimate revenue proportionally
+        const totalChEv=S.byChain[ch]?S.byChain[ch].ev:1;
+        const totalChRev=S.byChain[ch]?S.byChain[ch].rev:0;
+        const rev=totalChEv>0?(totalChRev*evts/totalChEv):0;
+        return{name:ch,events:evts,revenue:rev};
+      }).filter(x=>x.events>0).sort((a,b)=>b.revenue-a.revenue);
+    }
+    
+    // Per-month state data
+    if(S.st26m&&S.st26m[mo]){
+      stData=S.st26m[mo];
+    }else{
+      // Estimate: distribute YTD proportionally by month event share
+      const share=ev/(S.months.reduce((s,m)=>{const d=S.monthly[m];return s+(d?d.ev:0);},0)||1);
+      stData=Object.entries(S.byState).filter(x=>x[0]).map(([s,d])=>({s,e:Math.round(d.ev*share),r:d.rev*share})).sort((a,b)=>b.e-a.e);
+    }
+    
+    // Per-month region data
+    if(S.rg26m&&S.rg26m[mo]){
+      rgData=S.rg26m[mo];
+    }else{
+      const share=ev/(S.months.reduce((s,m)=>{const d=S.monthly[m];return s+(d?d.ev:0);},0)||1);
+      rgData=Object.entries(S.byRegion).map(([name,events])=>({name,events:Math.round(events*share),color:rgColors[name]||'#666'})).sort((a,b)=>b.events-a.events);
+    }
   }
   
   const netRev=Math.round(sa*0.87);
@@ -1958,6 +2014,19 @@ function processUpload(rawData,filename){
   };
   saveDashData(saveData);
   
+  // Update shared state for month filtering
+  window._dashState={
+    months:activeMonths,
+    monthly:monthly,
+    chainMonthly:chainMonthly,
+    byChain:byChain,
+    byState:byState,
+    byRegion:byRegion,
+    netUn:activeMonths.map(m=>Math.round((monthly[m]?monthly[m].un:0)*0.87)),
+    ch26m:null,st26m:null,rg26m:null,
+    ch26:null,st26:null,rg26:null
+  };
+  
   // Switch to 2026 tab
   switchYear('y26');
 }
@@ -2068,6 +2137,17 @@ function loadDashData(){
     }catch(e){}
     
     // Store for month filter
+    window._dashState={
+      months:activeMonths,
+      monthly:monthly,
+      chainMonthly:chainMonthly,
+      byChain:byChain,
+      byState:byState,
+      byRegion:byRegion,
+      netUn:activeMonths.map(m=>Math.round((monthly[m]?monthly[m].un:0)*0.87)),
+      ch26m:null,st26m:null,rg26m:null,
+      ch26:null,st26:null,rg26:null
+    };
     window._savedData=data;
     
     // Show subtle indicator
