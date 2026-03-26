@@ -1225,7 +1225,6 @@ const ch26m={
 
 window.setMonth26=function(mo){
   try{
-  document.title='Month: '+mo;
   document.querySelectorAll('#monthBar26 .mo-btn').forEach(b=>b.classList.remove('active'));
   const btn=document.querySelector('#monthBar26 .mo-btn[data-mo="'+mo+'"]');
   if(btn)btn.classList.add('active');
@@ -1275,7 +1274,7 @@ window.setMonth26=function(mo){
   const avgShop=ev>0?(sh/ev).toFixed(2):'0';
   const label=mo==='YTD'?'2026 YTD':mo+' 2026';
   
-  // Update KPIs directly (no animation to avoid issues)
+  // Update KPIs directly
   const kpis=document.querySelectorAll('#kpiGrid26 .kpi-val');
   const newVals=[
     (ev||0).toLocaleString(),(un||0).toLocaleString(),(netUn||0).toLocaleString(),
@@ -1283,13 +1282,17 @@ window.setMonth26=function(mo){
     '$'+(netRev||0).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0}),
     (sh||0).toLocaleString(),avgShop,conv+'%',upe,nupe
   ];
-  kpis.forEach((el,idx)=>{if(idx<newVals.length){el.textContent=newVals[idx];el.style.transition='color .3s';el.style.color='#22C55E';setTimeout(()=>{el.style.color='';},600);}});
+  kpis.forEach((el,idx)=>{
+    if(idx<newVals.length){
+      el.textContent=newVals[idx];
+      // Flash the parent card
+      const card=el.closest('.kpi-card');
+      if(card){card.style.transition='background .3s';card.style.background='rgba(34,197,94,.15)';setTimeout(()=>{card.style.background='';},800);}
+    }
+  });
+  // Update ALL sub-labels to show selected month
   const subs=document.querySelectorAll('#kpiGrid26 .kpi-sub');
-  if(subs[0])subs[0].textContent=label;
-  
-  // Debug: show what was set
-  const dbg=document.getElementById('uploadBanner');
-  if(dbg){dbg.textContent='Month: '+mo+' | Events: '+ev+' | Rev: $'+Math.round(sa).toLocaleString()+' | Found '+kpis.length+' KPIs';dbg.classList.add('show');setTimeout(()=>dbg.classList.remove('show'),4000);}
+  subs.forEach(s=>{s.textContent=label;});
   
   // Update Venues & Chains
   buildBars('bars26',chData,totalEv);
