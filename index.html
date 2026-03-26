@@ -1043,23 +1043,22 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 
     <!-- 2026 PROJECTIONS TAB -->
     <div id="pj26" class="tc">
-      <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--rad);padding:20px 24px;margin-bottom:20px;color:#fff">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-          <div style="flex:1;min-width:250px">
-            <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#F59E0B;font-weight:700;margin-bottom:2px">📅 Upcoming Scheduled Demos</div>
-            <div style="font-size:20px;font-weight:800" id="projTitle">March 2026 — 355 Events Scheduled</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px" id="projSubtitle">Across 15 states · 331 confirmed · 2 need BA assignment</div>
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rad);padding:20px;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div>
+            <div style="font-size:18px;font-weight:800;color:var(--tx)" id="projTitle">📅 March 2026 — 355 Events Scheduled</div>
+            <div style="font-size:12px;color:var(--td);margin-top:4px" id="projSubtitle">Across 15 states · 331 confirmed · 2 need BA assignment</div>
           </div>
-          <div style="display:flex;gap:10px;align-items:center">
-            <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;text-align:center"><div style="font-size:20px;font-weight:800;color:#22C55E" id="projTotalEv">355</div><div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.5)">Events</div></div>
-            <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;text-align:center"><div style="font-size:20px;font-weight:800;color:#3B82F6">331</div><div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.5)">Confirmed</div></div>
-            <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px 14px;text-align:center"><div style="font-size:20px;font-weight:800;color:#F59E0B">15</div><div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.5)">States</div></div>
-            <label class="upload-btn" for="schedUpload" style="background:rgba(249,115,22,.2);border-color:rgba(249,115,22,.5);margin-left:6px">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Upload Schedule
-            </label>
-            <input type="file" id="schedUpload" accept=".xlsx,.xls" style="display:none" onchange="handleScheduleUpload(this)">
-          </div>
+          <label class="upload-btn" for="schedUpload" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Schedule
+          </label>
+          <input type="file" id="schedUpload" accept=".xlsx,.xls" style="display:none" onchange="handleScheduleUpload(this)">
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:#22C55E" id="projTotalEv">355</div><div style="font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:.5px">Total Events</div></div>
+          <div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:#3B82F6">331</div><div style="font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:.5px">Confirmed</div></div>
+          <div style="background:var(--bg);border-radius:8px;padding:12px;text-align:center"><div style="font-size:22px;font-weight:800;color:#F59E0B">15</div><div style="font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:.5px">States</div></div>
         </div>
       </div>
       </div>
