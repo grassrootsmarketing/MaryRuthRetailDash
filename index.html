@@ -171,11 +171,502 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 <div class="container">
   <!-- YEAR TABS -->
   <div class="year-tabs">
-    <button class="year-tab" onclick="switchYear('y25')">📅 2025 Full Year</button>
-    <button class="year-tab active" onclick="switchYear('y26')">📅 2026 YTD</button>
+    <button class="year-tab" data-yr="y24" onclick="switchYear('y24')">📅 2024 Full Year</button>
+    <button class="year-tab" data-yr="y25" onclick="switchYear('y25')">📅 2025 Full Year</button>
+    <button class="year-tab active" data-yr="y26" onclick="switchYear('y26')">📅 2026 YTD</button>
   </div>
 
   <!-- ==================== 2025 PANEL ==================== -->
+  <div id="y24" class="year-panel">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Total Events</div><div class="kpi-tip">?<div class="tip">Total demo events for MRO in 2024.</div></div></div><div class="kpi-val">8,719</div><div class="kpi-sub">Full year 2024</div></div>
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Units (Incl.)</div><div class="kpi-tip">?<div class="tip">Gross units sold including sample purchases by BAs.</div></div></div><div class="kpi-val">75,990</div><div class="kpi-sub">Gross unit sales</div></div>
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Net Units (Excl.)</div><div class="kpi-tip">?<div class="tip">Net units excluding samples purchased by brand ambassadors for demo use. ~87% of total.</div></div></div><div class="kpi-val">66,111</div><div class="kpi-sub">Net purchases</div></div>
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Revenue (Incl.)</div><div class="kpi-tip">?<div class="tip">Gross revenue including sample purchases.</div></div></div><div class="kpi-val">$820,582</div><div class="kpi-sub">Gross revenue</div></div>
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Revenue (Excl.)</div><div class="kpi-tip">?<div class="tip">Estimated net revenue excluding sample purchases. Calculated by applying net/gross unit ratio (86.6%) to total revenue.</div></div></div><div class="kpi-val">$481,926</div><div class="kpi-sub">Net revenue</div></div>
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Shoppers Sampled</div><div class="kpi-tip">?<div class="tip">Total shoppers engaged and sampled to during events.</div></div></div><div class="kpi-val">15,035</div><div class="kpi-sub">Total engaged</div></div>
+      <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Avg Shoppers/Demo</div><div class="kpi-tip">?<div class="tip">Average shoppers sampled per event.</div></div></div><div class="kpi-val">1.72</div><div class="kpi-sub">Per event</div></div>
+      <div class="kpi-card hl"><div class="kpi-hdr"><div class="kpi-lbl">Conversion Rate (Net)</div><div class="kpi-tip">?<div class="tip">Net Units Sold (excl. team samples) ÷ Shoppers Sampled × 100. Benchmark: 15–25%.</div></div></div><div class="kpi-val" style="color:var(--g)">N/A</div><div class="kpi-sub">Net units ÷ shoppers</div></div>
+      <div class="kpi-card ac"><div class="kpi-hdr"><div class="kpi-lbl">Units Per Event (Gross)</div><div class="kpi-tip">?<div class="tip">Average gross units sold per event, including team sample purchases.</div></div></div><div class="kpi-val" style="color:var(--r)">8.72</div><div class="kpi-sub">Avg volume</div></div>
+      <div class="kpi-card ac"><div class="kpi-hdr"><div class="kpi-lbl">Units Per Event (Net)</div><div class="kpi-tip">?<div class="tip">Average net units sold per event, excluding team sample purchases. Reflects actual customer purchases only.</div></div></div><div class="kpi-val" style="color:#8B5CF6">7.58</div><div class="kpi-sub">Customer purchases only</div></div>
+    </div>
+    <div class="tabs">
+      <button class="stab active" onclick="subTab('y24','ov24')">📊 Overview</button>
+      <button class="stab" onclick="subTab('y24','ve24')">🏪 Venues & Chains</button>
+      <button class="stab" onclick="subTab('y24','rg24')">🗺️ Regional</button>
+
+      <button class="stab" onclick="subTab('y24','in24')">💡 Insights</button>
+      <button class="stab" onclick="subTab('y24','fb24')">💬 Customer Feedback</button>
+      <button class="stab" onclick="subTab('y24','rq24')">🛒 Customer Requests</button>
+      <button class="stab" onclick="subTab('y24','sp24')">📦 Monthly Planned Items</button>
+      <button class="stab" onclick="subTab('y24','mr24')">🏬 Merchandising</button>
+      <button class="stab" onclick="subTab('y24','qi24')">⚠️ Quality Issues</button>
+    </div>
+    <div id="ov24" class="tc active"><div class="cg">
+      <div class="cc"><div class="ct"><span class="i">📈</span> Monthly Events by Chain<div class="ct-tip">?<div class="tip">Total demo events each month, stacked by retail chain. Sourced from Promomash event records.</div></div></div><canvas id="c24_evChain" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">💰</span> Avg $/Event<div class="ct-tip">?<div class="tip">Average gross revenue per event each month. Calculated as total monthly revenue ÷ number of events.</div></div></div><canvas id="c24_avgD" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">📦</span> Monthly Units Sold (Gross)<div class="ct-tip">?<div class="tip">Total gross units sold across all events each month. Includes all SKUs — both customer purchases and units bought by brand ambassadors for demo sampling.</div></div></div><canvas id="c24_units" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">📦</span> Monthly Units Sold (Net)<div class="ct-tip">?<div class="tip">Net units sold each month, excluding units purchased by brand ambassadors for demo sampling. Reflects actual customer purchases only.</div></div></div><canvas id="c24_netUnits" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">📊</span> Events Per Month<div class="ct-tip">?<div class="tip">Total number of demo events completed each month across all chains and locations.</div></div></div><canvas id="c24_demos" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">👥</span> Shopper Interactions<div class="ct-tip">?<div class="tip">Total customers sampled to across all events each month. Reported by brand ambassadors via Promomash.</div></div></div><canvas id="c24_shop" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">🔄</span> Conversion Rate (Net)<div class="ct-tip">?<div class="tip">Percentage of sampled shoppers who purchased. Calculated as net units sold (excluding team sample purchases) ÷ total customers sampled. This excludes units bought by brand ambassadors for demo sampling.</div></div></div><canvas id="c24_conv" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">📍</span> Unique Locations by Chain<div class="ct-tip">?<div class="tip">Number of distinct store locations where at least one demo occurred that month, broken out by chain. Shows geographic reach vs. event volume.</div></div></div><canvas id="c24_uloc" height="280"></canvas></div>
+      <div class="cc"><div class="ct"><span class="i">🤝</span> Customer Engagements vs Events<div class="ct-tip">?<div class="tip">Dual-axis view: amber bars show total customers sampled (left axis), green line shows event count (right axis). Reveals how engagement scales relative to event volume.</div></div></div><canvas id="c24_eng" height="280"></canvas></div>
+    </div></div>
+    <div id="ve24" class="tc"><div class="cg">
+      <div class="cc"><div class="ct"><span class="i">🏪</span> Events by Chain</div><div id="bars24"></div></div>
+      <div class="cc"><div class="ct"><span class="i">💰</span> Revenue by Chain</div><canvas id="c24_chainRev" height="260"></canvas></div>
+      <div class="cc full"><div class="ct"><span class="i">📋</span> Chain Summary</div><table class="dt"><thead><tr><th>Chain</th><th>Events</th><th>Revenue</th><th>Avg $/Demo</th><th>%</th></tr></thead><tbody id="ctb24"></tbody></table></div>
+    </div></div>
+    <div id="rg24" class="tc"><div class="cg">
+      <div class="cc"><div class="ct"><span class="i">🗺️</span> Regional Overview</div><div class="dw"><canvas id="c24_regD" height="300"></canvas></div></div>
+      <div class="cc"><div class="ct"><span class="i">📊</span> Top States</div><canvas id="c24_topSt" height="360"></canvas></div>
+      <div class="cc full"><div class="ct"><span class="i">📋</span> State Breakdown</div><table class="dt"><thead><tr><th>State</th><th>Events</th><th>Revenue</th><th>Avg $/Demo</th><th>%</th></tr></thead><tbody id="stb24"></tbody></table></div>
+    </div></div>
+
+
+    <!-- 2025 INSIGHTS TAB -->
+    <div id="in24" class="tc">
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rad);padding:14px 20px;margin-bottom:16px;border-left:4px solid #3B82F6">
+        <div style="font-size:12px;color:var(--td);line-height:1.6">Derived from 3,844 Promomash event records (Jan–Dec 2024). Metrics include revenue, units sold, customers sampled, and conversion rates. Conversion is calculated using net units (excluding team sample purchases) ÷ customers sampled. Averages are calculated per event. Revenue figures represent gross sales at point of demo.</div>
+      </div>
+      <div class="ins-grid">
+
+        <!-- KEY FINDING -->
+        <div class="ins-card red full">
+          <div class="ins-title"><span class="ic">🎯</span> Key Finding — 2024</div>
+          <div class="ins-desc" style="font-size:14px;color:var(--tx);line-height:1.7">
+            <strong>Saturday events generate 46% more revenue per event than Tuesdays</strong> ($177 vs $121 avg $/event). September was the standout month — highest conversion (24.8%) and best avg $/event ($195). Georgia delivers 1.2× the revenue per event vs California despite having 4.4× fewer events, signaling a potential expansion opportunity. Whole Foods and Sprouts perform neck-and-neck on net conversion (~20%).
+          </div>
+        </div>
+
+        <!-- DAY OF WEEK -->
+        <div class="ins-card amber">
+          <div class="ins-title"><span class="ic">📅</span> Best Days to Demo</div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Sat</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:100%;background:var(--a)">$177</div></div><div class="ins-bar-val"><span class="ins-badge best">BEST</span></div></div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Sun</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:92%;background:var(--a)">$163</div></div><div class="ins-bar-val">7.1 units per event (gross)</div></div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Thu</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:84%;background:var(--a)">$148</div></div><div class="ins-bar-val">7.0 units per event (gross)</div></div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Fri</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:80%;background:var(--td)">$142</div></div><div class="ins-bar-val">6.5 units per event (gross)</div></div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Wed</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:76%;background:var(--td)">$135</div></div><div class="ins-bar-val">6.6 units per event (gross)</div></div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Mon</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:75%;background:var(--td)">$133</div></div><div class="ins-bar-val">6.0 units per event (gross)</div></div>
+          <div class="ins-bar-row"><div class="ins-bar-lbl">Tue</div><div class="ins-bar-trk"><div class="ins-bar-fill" style="width:68%;background:var(--tm)">$121</div></div><div class="ins-bar-val"><span class="ins-badge worst">LOWEST</span></div></div>
+          <div class="ins-desc" style="margin-top:10px">Weekend events earn 24% more per event on average. Consider shifting Tuesday events to Sat/Sun.</div>
+        </div>
+
+        <!-- CHAIN EFFICIENCY -->
+        <div class="ins-card green">
+          <div class="ins-title"><span class="ic">🏪</span> Chain Efficiency</div>
+          <div class="ins-row"><div class="lbl">Whole Foods</div><div class="val">$181.53/event · 20.2% conv · 7.56 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">Central Market</div><div class="val">$148.36/event · 11.2% conv · 5.26 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">Sprouts</div><div class="val">$108.56/event · 19.8% conv · 6.04 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">Independents</div><div class="val">$92.96/event · 10.6% conv · 3.66 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">Erewhon</div><div class="val">$62.68/event · 3.8% conv · 2.41 units per event (gross)</div></div>
+          <div class="ins-desc" style="margin-top:10px">Whole Foods delivers 67% more revenue per event than Sprouts with comparable net conversion (~20%). Erewhon has lowest conversion at 3.8% — consider reallocating those 107 events.</div>
+        </div>
+
+        <!-- MONTHLY PEAKS -->
+        <div class="ins-card blue">
+          <div class="ins-title"><span class="ic">📈</span> Monthly Peaks & Valleys</div>
+          <div class="ins-row"><div class="lbl">Best Month (Avg $/Demo)</div><div class="val up">September — $195.01</div></div>
+          <div class="ins-row"><div class="lbl">Worst Month (Avg $/Demo)</div><div class="val dn">June — $99.25</div></div>
+          <div class="ins-row"><div class="lbl">Highest Conversion</div><div class="val up">September — 24.8%</div></div>
+          <div class="ins-row"><div class="lbl">Most Events</div><div class="val">August — 438 events</div></div>
+          <div class="ins-row"><div class="lbl">Fewest Events</div><div class="val">December — 222 events</div></div>
+          <div class="ins-desc" style="margin-top:10px">Q3 (Aug-Sep) is the revenue sweet spot. June dip may correlate with seasonal patterns — investigate scheduling.</div>
+        </div>
+
+        <!-- STATE EFFICIENCY -->
+        <div class="ins-card purple">
+          <div class="ins-title"><span class="ic">🗺️</span> State Revenue Efficiency</div>
+          <div class="ins-row"><div class="lbl">🥇 Georgia</div><div class="val up">$210.04/event · 9.7 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">🥈 Illinois</div><div class="val up">$221.64/event · 9.9 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">🥉 Florida</div><div class="val">$176.96/event · 8.2 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">Texas</div><div class="val">$160.41/event · 6.9 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">California</div><div class="val">$125.13/event · 5.9 units per event (gross)</div></div>
+          <div class="ins-row" style="border-top:1px solid var(--bd);margin-top:4px;padding-top:12px"><div class="lbl">⚠️ Colorado</div><div class="val dn">$56.50/event · 2.9 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">⚠️ Pennsylvania</div><div class="val dn">$55.77/event · 2.5 units per event (gross)</div></div>
+          <div class="ins-desc" style="margin-top:10px">GA has 195 events but 2.8× the efficiency of CA (863 events). Scaling GA and IL could have outsized ROI. CO and PA underperform — review store selection.</div>
+        </div>
+
+        <!-- TOP 5 STATES BY DEMO VOLUME -->
+        <div class="ins-card blue">
+          <div class="ins-title"><span class="ic">📍</span> Top 5 States by Demo Volume</div>
+          <div class="ins-row"><div class="lbl">🥇 California</div><div class="val">863 events · $107,989 revenue</div></div>
+          <div class="ins-row"><div class="lbl">🥈 Texas</div><div class="val">753 events · $120,786 revenue</div></div>
+          <div class="ins-row"><div class="lbl">🥉 Florida</div><div class="val">511 events · $90,425 revenue</div></div>
+          <div class="ins-row"><div class="lbl">4. Arizona</div><div class="val">247 events · $37,299 revenue</div></div>
+          <div class="ins-row"><div class="lbl">5. Colorado</div><div class="val">216 events · $12,203 revenue</div></div>
+          <div class="ins-desc" style="margin-top:10px">These 5 states account for 2,590 events (67% of total). Note: Texas generates more revenue than California despite 13% fewer events — higher avg $/event ($160 vs $125).</div>
+        </div>
+
+        <!-- TOP SKUs -->
+        <div class="ins-card amber">
+          <div class="ins-title"><span class="ic">🏷️</span> Top Selling SKUs</div>
+          <div class="ins-row"><div class="lbl">🥇</div><div class="val">Liquid Morning Multi + Hair Growth Peach Mango 30oz — 2,612 total (avg 1.8/event)</div></div>
+          <div class="ins-row"><div class="lbl">🥈</div><div class="val">Kids Multi Gummies SF Strawberry Papaya 60ct — 1,902 total (avg 1.5/event)</div></div>
+          <div class="ins-row"><div class="lbl">🥉</div><div class="val">Liquid Morning Multi Raspberry 30oz — 1,631 total (avg 1.4/event)</div></div>
+          <div class="ins-row"><div class="lbl">4.</div><div class="val">Organic Women's Multi Gummies Cherry Raspberry 60ct — 942 total</div></div>
+          <div class="ins-row"><div class="lbl">5.</div><div class="val">Organic Kids Multi Gummies Mixed Berry 60ct — 743 total</div></div>
+          <div class="ins-row"><div class="lbl">6.</div><div class="val">Organic Kids Probiotic Gummies Strawberry 60ct — 713 total</div></div>
+          <div class="ins-row"><div class="lbl">7.</div><div class="val">Dissolvable Strips Energy 7ct — 652 total (avg 2.5/event when sold)</div></div>
+          <div class="ins-row"><div class="lbl">8.</div><div class="val">Organic Sea Moss Liquid Extract 1oz — 605 total</div></div>
+          <div class="ins-row"><div class="lbl">9.</div><div class="val">Liquid Nighttime Multimineral Coconut Dream 1oz — 548 total</div></div>
+          <div class="ins-row"><div class="lbl">10.</div><div class="val">Liquid Morning Multi Raspberry 1oz — 532 total</div></div>
+          <div class="ins-desc" style="margin-top:10px">Hair Growth Peach Mango dominates at 2,612 total sold (avg 1.8/event) — 38% more than the #2 SKU. Liquid multivitamins hold 3 of the top 3 spots. The 1oz sample sizes (ranks 9–10) indicate strong trial interest.</div>
+        </div>
+
+        <!-- TOP STORES -->
+        <div class="ins-card red">
+          <div class="ins-title"><span class="ic">⭐</span> Top Performing Stores</div>
+          <div class="ins-row"><div class="lbl">🥇 WFM Orlando Bayhill</div><div class="val up">$514/event · 22.4 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">🥈 WFM Chandler</div><div class="val up">$467/event · 16.0 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">🥉 Sprouts Peachtree Corners</div><div class="val up">$446/event · 23.8 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">4. WFM Sandy Springs</div><div class="val">$431/event · 16.7 units per event (gross)</div></div>
+          <div class="ins-row"><div class="lbl">5. WFM Palm Desert</div><div class="val">$416/event · 16.8 units per event (gross)</div></div>
+          <div class="ins-desc" style="margin-top:10px;border-top:1px solid var(--bd);padding-top:10px"><strong>Bottom performers:</strong> Sprouts Philadelphia Broad ($27/event), Sprouts Philadelphia Oregon Ave ($28/event), Sprouts Henderson ($28/event). These 3 stores average 85% less revenue per event than the median.</div>
+        </div>
+
+      </div>
+      </div>
+
+    <!-- 2025 FEEDBACK TAB -->
+    <div id="fb24" class="tc">
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rad);padding:14px 20px;margin-bottom:16px;border-left:4px solid #F59E0B">
+        <div style="font-size:12px;color:var(--td);line-height:1.6">Qualitative insights compiled from Promomash "customer feedback" fields, brand ambassador Slack reports, and demo event notes across 3,844 events in 2024. Product launch performance metrics (units per event (gross)) are calculated from raw sales data. Sentiment themes are aggregated from free-text responses.</div>
+      </div>
+      <!-- Product Launch Spotlight -->
+      <div class="fb-summary" style="border-left:4px solid var(--r)">
+        <h3>🚀 New Product & SKU Focus Spotlight — 2024</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+          <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:14px">
+            <div style="font-size:12px;font-weight:700;color:var(--a);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">⚡ Dissolving Strips (Feb–May Push → Dec Revival)</div>
+            <div style="font-size:12px;color:var(--td);line-height:1.7">Strips launched in Jan selling just 1 per event across 5 events. Peaked Feb-May with heavy sampling — by May, the average demo sold 3.1 Energy Strips across 93 events. Mood & Cognition averaged 3.1 per event in Feb (62 events). Interest cratered Jun-Nov (single-digit event counts), then Dec saw a revival averaging 2.7 per event across 45 events. Customers loved the concept and convenience but consistently asked for <strong>more caffeine</strong>, <strong>better taste</strong>, and <strong>a hair growth strip version</strong>. University students were a standout demo for the affordable Energy Strips.</div>
+          </div>
+          <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:14px">
+            <div style="font-size:12px;font-weight:700;color:var(--g);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">💪 Creatine Gummies (Sep Launch)</div>
+            <div style="font-size:12px;color:var(--td);line-height:1.7">Launched in Aug across just 3 events, then exploded in Sep — the average demo sold 1.6 Creatine Gummies across 97 events during the Whole Foods vitamin sale. Feedback was polarized: gym-goers loved the gummy format but consistently said the <strong>dosage was too low</strong> (3g vs the 5-10g they take in powder). Some found the texture <strong>gritty with a bitter aftertaste</strong>. Personal trainers questioned efficacy of low-dose creatine. Q4 averaged 1.4 per event across 68 events.</div>
+          </div>
+          <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:14px">
+            <div style="font-size:12px;font-weight:700;color:var(--b);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🐉 Dragon Fruit Melon Hair Growth (Aug Launch)</div>
+            <div style="font-size:12px;color:var(--td);line-height:1.7">First appeared in Aug averaging 1.3 per event across 10 events, then built steadily — by Nov, the average demo sold 1.4 across 59 events (the peak month). Customers were excited for a new flavor alternative to peach mango. Feedback was mostly positive on taste. Many asked for <strong>smaller 15oz bottles</strong> and <strong>travel/pouch sizes</strong>. By Dec, shoppers were actively requesting it, and some wished for the dragon fruit in a <strong>sugar-free gummy</strong> version too.</div>
+          </div>
+          <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:14px">
+            <div style="font-size:12px;font-weight:700;color:#8B5CF6;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">🌊 Sea Moss (Steady Riser)</div>
+            <div style="font-size:12px;color:var(--td);line-height:1.7">Sea Moss products were available all year. Liquid Extract peaked in Aug averaging 1.3 per event across 78 events, while Gummies sold steadily (~30-75 total/mo). The green apple gummy flavor was a crowd-pleaser — BAs compared it to "Jolly Rancher candy." Customers frequently asked for <strong>sea moss gel</strong> format. By 2026, the sea moss gel recall from competitors drove new interest to MRO's versions.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="fb-summary">
+        <h3>📋 Annual Feedback Summary</h3>
+        <div class="fb-summary-grid">
+          <div>
+            <h4 style="color:var(--g);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">✅ Top Positive Themes (All Year)</h4>
+            <div><span class="fb-tag pos">Gummies <span class="ct">loved across all events</span></span><span class="fb-tag pos">Liquid Format <span class="ct">easy to take</span></span><span class="fb-tag pos">Taste/Flavor <span class="ct">consistently praised</span></span><span class="fb-tag pos">Clean Ingredients <span class="ct">vegan, gluten-free</span></span><span class="fb-tag pos">Kids Products <span class="ct">parents love them</span></span><span class="fb-tag pos">Hair Growth <span class="ct">high interest</span></span><span class="fb-tag pos">Brand Trust <span class="ct">social media buzz</span></span><span class="fb-tag pos">Coupons <span class="ct">drive purchases</span></span></div>
+          </div>
+          <div>
+            <h4 style="color:var(--r);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">⚠️ Recurring Concerns (All Year)</h4>
+            <div><span class="fb-tag neg">Taste/Medicine-like <span class="ct">#1 complaint</span></span><span class="fb-tag neg">Sugar Content <span class="ct">kids gummies esp.</span></span><span class="fb-tag neg">Too Sweet <span class="ct">liquid formulas</span></span><span class="fb-tag neg">Price <span class="ct">hair growth esp.</span></span><span class="fb-tag neg">Strong/Thick <span class="ct">liquid MV</span></span><span class="fb-tag neg">Coupon Issues <span class="ct">scanning problems</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Breakdown -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 January</h3><span class="ev-badge">354 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Gummies <span class="ct">175</span></span><span class="fb-tag pos">Liquid <span class="ct">156</span></span><span class="fb-tag pos">Taste <span class="ct">148</span></span><span class="fb-tag pos">Kids <span class="ct">136</span></span><span class="fb-tag pos">Brand <span class="ct">98</span></span><div class="fb-quote pos-q">"Customers came ready to buy with the big sale. Many were extremely happy to see me for guidance on what they should buy for their individual health needs."</div><div class="fb-quote pos-q">"I helped customers build an MR basket! Once I went over quality and benefits, several customers would ask me to help them find other supplements."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">109</span></span><span class="fb-tag neg">Sugar <span class="ct">80</span></span><span class="fb-tag neg">Sweet <span class="ct">27</span></span><span class="fb-tag neg">Medicine <span class="ct">25</span></span><div class="fb-quote neg-q">"Kids Liquid Multivitamin has not been a popular sample item. Parents comment that the flavor is too strong for their children."</div><div class="fb-quote neg-q">"Customers would like to find sugar-free adult gummies in store again."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 February</h3><span class="ev-badge">348 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Liquid <span class="ct">171</span></span><span class="fb-tag pos">Taste <span class="ct">153</span></span><span class="fb-tag pos">Gummies <span class="ct">131</span></span><span class="fb-tag pos">Brand <span class="ct">111</span></span><span class="fb-tag pos">Kids <span class="ct">104</span></span><div class="fb-quote pos-q">"As a busy mom, Mary Ruth's products make her life easier. The liquid versions are simple to give to her kids, and they genuinely enjoy the flavors."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">95</span></span><span class="fb-tag neg">Price <span class="ct">39</span></span><span class="fb-tag neg">Coupon <span class="ct">28</span></span><span class="fb-tag neg">Medicine <span class="ct">27</span></span><div class="fb-quote neg-q">"Coupons don't scan at this store — cashiers were confused and had to manually enter them."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 March</h3><span class="ev-badge">398 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Liquid <span class="ct">174</span></span><span class="fb-tag pos">Taste <span class="ct">148</span></span><span class="fb-tag pos">Flavor <span class="ct">137</span></span><span class="fb-tag pos">Gummies <span class="ct">123</span></span><span class="fb-tag pos">Brand <span class="ct">119</span></span><div class="fb-quote pos-q">"A mom's pediatrician recommended she check Mary Ruth for infant probiotics. She was thrilled to find the Infant Probiotic Drops at the demo."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">114</span></span><span class="fb-tag neg">Sweet <span class="ct">40</span></span><span class="fb-tag neg">Price <span class="ct">25</span></span><span class="fb-tag neg">Strong <span class="ct">21</span></span><div class="fb-quote neg-q">"A couple of people didn't love the peach mango flavor. A few people requested to try the strawberry instead."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 April</h3><span class="ev-badge">257 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Liquid <span class="ct">158</span></span><span class="fb-tag pos">Gummies <span class="ct">132</span></span><span class="fb-tag pos">Taste <span class="ct">109</span></span><span class="fb-tag pos">Kids <span class="ct">87</span></span><div class="fb-quote pos-q">"Both kids gave a big thumbs-up after trying the gummies. Parents noted the sugar-free option was important to them."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">75</span></span><span class="fb-tag neg">Strong <span class="ct">27</span></span><span class="fb-tag neg">Sugar <span class="ct">25</span></span><span class="fb-tag neg">Price <span class="ct">23</span></span><div class="fb-quote neg-q">"One woman wanted to buy the Women's 40+ Liposomal but couldn't because it's not specifically labeled as gluten free."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 May</h3><span class="ev-badge">395 events · ⚡ Peak Strip Sales</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Liquid <span class="ct">238</span></span><span class="fb-tag pos">Hair Growth <span class="ct">151</span></span><span class="fb-tag pos">Gummies <span class="ct">141</span></span><span class="fb-tag pos">Taste <span class="ct">140</span></span><div class="fb-quote pos-q">"Mary Ruth's had become their go-to brand because of how effective and clean the supplements are. Customers were impressed by the range."</div><div class="fb-quote pos-q">"Significant interest in the Energy Strips with positive reception upon discovering they contain green caffeine. The coupons drove many strip purchases."</div><div style="font-size:11px;color:var(--a);font-weight:600;margin-top:8px">⚡ Energy Strips averaged 3.1 sold per event across 93 events — highest month of 2025. Mood & Cognition averaged 2.8 per event (17 events).</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">131</span></span><span class="fb-tag neg">Sweet <span class="ct">44</span></span><span class="fb-tag neg">Strong <span class="ct">43</span></span><span class="fb-tag neg">Sugar <span class="ct">30</span></span><div class="fb-quote neg-q">"Some thought the Hair Multivitamin Liquid was very thick and tasted like medicine. Some didn't want to purchase the full bottle without trying it first."</div><div class="fb-quote neg-q">"Iron gummies for kids — this is getting asked a lot lately."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 June</h3><span class="ev-badge">257 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Liquid <span class="ct">128</span></span><span class="fb-tag pos">Gummies <span class="ct">127</span></span><span class="fb-tag pos">Taste <span class="ct">125</span></span><span class="fb-tag pos">Flavor <span class="ct">88</span></span><div class="fb-quote pos-q">"Samplers were surprised by the Lion's Mane Liposomal — it tasted so good and not like mushrooms at all."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">60</span></span><span class="fb-tag neg">Price <span class="ct">39</span></span><span class="fb-tag neg">Sugar <span class="ct">39</span></span><span class="fb-tag neg">Strong <span class="ct">25</span></span><div class="fb-quote neg-q">"More than half said the Lion's Mane was too pricey for the number of servings, despite loving the taste."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 July</h3><span class="ev-badge">283 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Gummies <span class="ct">150</span></span><span class="fb-tag pos">Liquid <span class="ct">126</span></span><span class="fb-tag pos">Taste <span class="ct">122</span></span><span class="fb-tag pos">Brand <span class="ct">103</span></span><div class="fb-quote pos-q">"Shoppers really liked that the brand has so many different products — all gluten free, vegan, and in gummy or liquid form."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Sugar <span class="ct">52</span></span><span class="fb-tag neg">Taste <span class="ct">46</span></span><span class="fb-tag neg">Sweet <span class="ct">37</span></span><span class="fb-tag neg">Price <span class="ct">34</span></span><div class="fb-quote neg-q">"People were expressing interest, but then not purchasing — price seems to be the barrier."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 August</h3><span class="ev-badge">438 events · 🐉 Dragon Fruit MV Debut</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Gummies <span class="ct">242</span></span><span class="fb-tag pos">Liquid <span class="ct">225</span></span><span class="fb-tag pos">Kids <span class="ct">194</span></span><span class="fb-tag pos">Taste <span class="ct">185</span></span><div class="fb-quote pos-q">"One shopper mentioned how reassuring it was to connect with a brand in a tangible way — to taste, ask questions, and feel confident about what she'd be giving her family."</div><div class="fb-quote pos-q">"MRO customers want to see more transparent labeling about sourcing — synthetic vs organic and whole food vitamin sourcing."</div><div style="font-size:11px;color:var(--b);font-weight:600;margin-top:8px">🐉 Dragon Fruit Melon Hair Growth debuted, averaging 1.3 per event across 10 events. Highest event count of the year (438).</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">134</span></span><span class="fb-tag neg">Sugar <span class="ct">84</span></span><span class="fb-tag neg">Sweet <span class="ct">46</span></span><span class="fb-tag neg">Medicine <span class="ct">39</span></span><div class="fb-quote neg-q">"One shopper was unhappy with the inclusion of 'natural flavors' and said it was misleading. Two shoppers compared the liquid MV to cough medicine."</div><div class="fb-quote neg-q">"Capsule form for each vitamin always comes up. People want the option."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 September</h3><span class="ev-badge">339 events · 💪 Creatine Launch Month</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Gummies <span class="ct">218</span></span><span class="fb-tag pos">Liquid <span class="ct">165</span></span><span class="fb-tag pos">Creatine <span class="ct">118</span></span><span class="fb-tag pos">Kids <span class="ct">148</span></span><div class="fb-quote pos-q">"This was such a fun demo due to the supplement sale! Both shoppers and employees love us! Customers said they've seen our products all over TikTok."</div><div class="fb-quote pos-q">"I heard about creatine! This was a college student excited to try the gummy format — much more convenient than powder."</div><div style="font-size:11px;color:var(--g);font-weight:600;margin-top:8px">💪 Creatine Gummies exploded: avg demo sold 1.6 across 97 events. Dragon Fruit MV ramping at avg 1.2 per event (35 events).</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">85</span></span><span class="fb-tag neg">Sugar <span class="ct">65</span></span><span class="fb-tag neg">Sweet <span class="ct">56</span></span><span class="fb-tag neg">Strong <span class="ct">26</span></span><div class="fb-quote neg-q">"A few shoppers thought the Creatine Gummies were a bit gritty with a slightly bitter aftertaste."</div><div class="fb-quote neg-q">"One shopper's personal trainer said if creatine supplements don't have a bitter aftertaste or grit, they don't have much creatine in them."</div><div class="fb-quote neg-q">"I wish the creatine dosage was a bit higher — I need 5-10g per serving and this only has 3g."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 October</h3><span class="ev-badge">299 events</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Gummies <span class="ct">172</span></span><span class="fb-tag pos">Liquid <span class="ct">157</span></span><span class="fb-tag pos">Taste <span class="ct">130</span></span><span class="fb-tag pos">Kids <span class="ct">129</span></span><div class="fb-quote pos-q">"Three generations of one family came by and said this product line is very good for the entire family."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Sugar <span class="ct">78</span></span><span class="fb-tag neg">Taste <span class="ct">77</span></span><span class="fb-tag neg">Sweet <span class="ct">32</span></span><span class="fb-tag neg">Price <span class="ct">29</span></span><div class="fb-quote neg-q">"Shoppers wished we could have the $10 coupons we used to give out for the liquid vitamins."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 November</h3><span class="ev-badge">254 events · 🐉 Dragon Fruit Peak (avg 1.4/event, 59 events)</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Gummies <span class="ct">165</span></span><span class="fb-tag pos">Liquid <span class="ct">137</span></span><span class="fb-tag pos">Taste <span class="ct">121</span></span><span class="fb-tag pos">Flavor <span class="ct">88</span></span><div class="fb-quote pos-q">"Customers were surprised they actually liked the dragonfruit melon multi. People really like the nice selection of herbal tinctures."</div><div class="fb-quote pos-q">"Dragon fruit LMV with hair growth in travel size just like the peach mango has been suggested. Vitamin C liquid drops to be sold in Sprouts."</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">64</span></span><span class="fb-tag neg">Sugar <span class="ct">49</span></span><span class="fb-tag neg">Sweet <span class="ct">26</span></span><span class="fb-tag neg">Thick <span class="ct">24</span></span><div class="fb-quote neg-q">"Customer was disappointed by the sugar in Kids Organic Multivitamin Gummies. Asked if there was an organic, sugar-free option."</div><div class="fb-quote neg-q">"Several customers were disappointed that Sprouts did not carry the Lymph tonic."</div></div></div></div>
+
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 December</h3><span class="ev-badge">222 events · ⚡ Energy Strip Revival (avg 2.7/event, 45 events)</span></div><div class="fb-row"><div class="fb-col"><h4 class="pos">✅ Positive Trends</h4><span class="fb-tag pos">Taste <span class="ct">112</span></span><span class="fb-tag pos">Liquid <span class="ct">110</span></span><span class="fb-tag pos">Gummies <span class="ct">81</span></span><span class="fb-tag pos">Coupons <span class="ct">65</span></span><div class="fb-quote pos-q">"Customers were very excited about 25% off in vitamins section plus the additional $5 and $3 off coupons. The strips and pill cases were popular holiday items."</div><div class="fb-quote pos-q">"Oh! Is that new? The dissolving strips — how cool! I love the idea of taking my vitamins this way."</div><div style="font-size:11px;color:var(--a);font-weight:600;margin-top:8px">⚡ Energy Strips bounced back, averaging 2.7 sold per event across 45 events after 6 months of near-zero activity. Holiday gifting drove the revival.</div></div><div class="fb-col"><h4 class="neg">⚠️ Negative Trends</h4><span class="fb-tag neg">Taste <span class="ct">57</span></span><span class="fb-tag neg">Sugar <span class="ct">47</span></span><span class="fb-tag neg">Sweet <span class="ct">31</span></span><span class="fb-tag neg">Thick <span class="ct">25</span></span><div class="fb-quote neg-q">"Shoppers said the brand doesn't have smaller containers of dragon fruit flavor to sell — they'd buy it if they had 15oz bottles."</div><div class="fb-quote neg-q">"It's been suggested to have a lemon lime flavor for the energy strip — strawberry wasn't a great flavor according to samplers."</div></div></div></div>
+    </div>
+
+    <!-- 2025 CUSTOMER REQUESTS TAB -->
+    <div id="rq24" class="tc">
+      <!-- TOP 3 HERO -->
+      <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:var(--rad);padding:28px 32px;margin-bottom:20px;color:#fff">
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#F59E0B;font-weight:700;margin-bottom:6px">Top 3 Customer Requests of 2025</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.5)">What shoppers are asking for across 3,844 demo events</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:20px;text-align:center">
+            <div style="font-size:28px;margin-bottom:6px">🥇</div>
+            <div style="font-size:15px;font-weight:700;color:#F59E0B;margin-bottom:4px">Capsule / Pill Form</div>
+            <div style="font-size:28px;font-weight:800;color:#fff;margin-bottom:4px">113</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5)">mentions across events</div>
+            <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;font-style:italic">"I wish she made vitamins in pill/capsule form"</div>
+          </div>
+          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:20px;text-align:center">
+            <div style="font-size:28px;margin-bottom:6px">🥈</div>
+            <div style="font-size:15px;font-weight:700;color:#22C55E;margin-bottom:4px">Sugar-Free Options</div>
+            <div style="font-size:28px;font-weight:800;color:#fff;margin-bottom:4px">98</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5)">mentions across events</div>
+            <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;font-style:italic">"I wish all her products were sugar-free"</div>
+          </div>
+          <div style="background:rgba(255,255,255,.08);border:1px solid rgba(59,130,246,.3);border-radius:12px;padding:20px;text-align:center">
+            <div style="font-size:28px;margin-bottom:6px">🥉</div>
+            <div style="font-size:15px;font-weight:700;color:#3B82F6;margin-bottom:4px">Collagen Products</div>
+            <div style="font-size:28px;font-weight:800;color:#fff;margin-bottom:4px">59</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.5)">mentions across events</div>
+            <div style="margin-top:10px;font-size:11px;color:rgba(255,255,255,.6);line-height:1.5;font-style:italic">"Collagen gummies, powder, liquid — any format"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fb-summary" style="border-left:4px solid var(--a)">
+        <h3>🛒 Most Requested Products & Formats — 2024</h3>
+        <div style="font-size:12px;color:var(--td);line-height:1.6;margin-bottom:12px">Sourced from 1,872 customer responses to "What items would customers like to see MRO make?" (field added Feb 2025) plus shopper comments and quotes captured by brand ambassadors throughout the year.</div>
+      </div>
+
+      <div class="ins-grid">
+        <!-- #1 Capsule/Pill Form -->
+        <div class="ins-card amber">
+          <div class="ins-title"><span class="ic">🥇</span> Capsule / Pill Form — 113 mentions</div>
+          <div class="ins-desc" style="line-height:1.7">The single most requested format change. Customers across all demographics want vitamins in capsule/pill form as an alternative to liquid and gummies. Multivitamins are the #1 ask for capsule format. Key driver: some customers can't tolerate gummy texture, sugar content, or liquid taste.</div>
+          <div class="fb-quote pos-q" style="margin-top:10px">"I wish she made vitamins in pill/capsule form" · "Capsule form for each vitamin always comes up" · "I don't do gummies so I wish they had calcium in liquid or capsule form"</div>
+        </div>
+
+        <!-- #2 Sugar Free -->
+        <div class="ins-card green">
+          <div class="ins-title"><span class="ic">🥈</span> Sugar-Free Options — 98 mentions</div>
+          <div class="ins-desc" style="line-height:1.7">Persistent demand for sugar-free versions across the line — especially kids' gummies, probiotic gummies, and vitamin C gummies. Parents are the most vocal group. Some want sugar-free versions of products that only exist in organic (sugar-containing) form.</div>
+          <div class="fb-quote pos-q" style="margin-top:10px">"I wish all her products were sugar-free" · "Sugar-free MV gummies for all genders and ages" · "I love the kids gummies but wish the probiotic one were also sugar-free"</div>
+        </div>
+
+        <!-- #3 Collagen -->
+        <div class="ins-card blue">
+          <div class="ins-title"><span class="ic">🥉</span> Collagen Products — 59 mentions</div>
+          <div class="ins-desc" style="line-height:1.7">Significant demand for collagen in multiple formats — gummies, powder, and liquid. Customers are aware MRO is vegan and some specifically ask for vegan collagen-boosting supplements. Others would buy non-vegan collagen from MRO if available.</div>
+          <div class="fb-quote pos-q" style="margin-top:10px">"Collagen Gummies" · "Powder collagen" · "Collagen boosters, D-Ribose for collagen production"</div>
+        </div>
+
+        <!-- #4 Immunity -->
+        <div class="ins-card red">
+          <div class="ins-title"><span class="ic">4.</span> Immunity / Cold & Flu — 50 mentions</div>
+          <div class="ins-desc" style="line-height:1.7">Customers want dedicated cold/flu and allergy relief products. Currently addressed partially through Elderberry, Oil of Oregano, and Vitamin C, but shoppers want a clear "immunity" SKU — potentially a kids version of the 7-in-1 Immunity Support Liposomal.</div>
+          <div class="fb-quote pos-q" style="margin-top:10px">"People keep mentioning cold and allergy medicines would be great" · "A mom wants the 7-in-1 Immunity Support but for kids" · "Immunity strips"</div>
+        </div>
+
+        <!-- #5 Protein/Muscle -->
+        <div class="ins-card purple">
+          <div class="ins-title"><span class="ic">5.</span> Protein / Muscle Building — 48 mentions</div>
+          <div class="ins-desc" style="line-height:1.7">Demand for protein powder (sugar-free chocolate was specifically requested), muscle-building supplements, and higher-dose creatine. The creatine gummy launch in Sep partially addressed this but dosage complaints persist (3g vs desired 5-10g).</div>
+          <div class="fb-quote pos-q" style="margin-top:10px">"Many were shopping for protein" · "Muscle building supplements for men and women" · "Everyone is looking for more protein"</div>
+        </div>
+
+        <!-- 6-10 Summary -->
+        <div class="ins-card blue full">
+          <div class="ins-title"><span class="ic">📋</span> Also Frequently Requested (Ranks 6–15)</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">
+            <div class="ins-row"><div class="lbl">6. Men's Products</div><div class="val">46 mentions — hormone support, dedicated men's line</div></div>
+            <div class="ins-row"><div class="lbl">7. Smaller Sizes</div><div class="val">42 mentions — 15oz bottles, travel packs, pouches</div></div>
+            <div class="ins-row"><div class="lbl">8. New Flavors</div><div class="val">41 mentions — strawberry hair growth, vanilla, lemon lime strips</div></div>
+            <div class="ins-row"><div class="lbl">9. Omega/DHA</div><div class="val">40 mentions — adult omega at Sprouts, higher DHA/EPA</div></div>
+            <div class="ins-row"><div class="lbl">10. Calcium</div><div class="val">36 mentions — calcium gummy w/ D3, liquid calcium</div></div>
+            <div class="ins-row"><div class="lbl">11. Hair Growth Standalone</div><div class="val">28 mentions — hair formula without multivitamin</div></div>
+            <div class="ins-row"><div class="lbl">12. Magnesium (New Forms)</div><div class="val">27 mentions — glycinate, lotion, powder</div></div>
+            <div class="ins-row"><div class="lbl">13. Pet Products</div><div class="val">25 mentions — dog/cat supplements</div></div>
+            <div class="ins-row"><div class="lbl">14. Energy Products</div><div class="val">25 mentions — energy shots, drinks, more caffeine in strips</div></div>
+            <div class="ins-row"><div class="lbl">15. Glass Containers</div><div class="val">21 mentions — eco-friendly packaging for 30oz liquids</div></div>
+          </div>
+        </div>
+
+        <!-- Notable Niche Requests -->
+        <div class="ins-card green">
+          <div class="ins-title"><span class="ic">💎</span> Notable Niche Requests</div>
+          <div class="ins-desc" style="line-height:1.8">
+            <span class="fb-tag pos">Fiber (liquid) <span class="ct">20</span></span>
+            <span class="fb-tag pos">Organic Versions <span class="ct">20</span></span>
+            <span class="fb-tag pos">Menopause Support <span class="ct">15+</span></span>
+            <span class="fb-tag pos">Kids Iron Gummies <span class="ct">15</span></span>
+            <span class="fb-tag pos">Beet/Superfood Gummies <span class="ct">24</span></span>
+            <span class="fb-tag pos">Seniors 55+ MV <span class="ct">10+</span></span>
+            <span class="fb-tag pos">Hair Growth Gummy <span class="ct">10+</span></span>
+            <span class="fb-tag pos">Kosher Certification <span class="ct">5+</span></span>
+          </div>
+          <div class="fb-quote pos-q" style="margin-top:10px">"I wish Mary Ruth made granola bars or some kind of healthy snack" · "Mary Ruth should make a recipe book with new ways to incorporate these supplements" · "You should make a hot sauce or Flamin' Hot vitamin sauce! Then I could take my vitamins while eating nachos"</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2025 SAMPLE PLAN TAB -->
+    <div id="sp24" class="tc">
+      <div class="fb-summary" style="border-left:4px solid #8B5CF6">
+        <h3>📦 Monthly Planned Items — 2024</h3>
+        <div style="font-size:12px;color:var(--td);line-height:1.6">Items assigned to each retailer for in-store sampling, sourced from MRO Item Planner. Whole Foods and Sprouts receive the most differentiated rotations; smaller chains share a standard kit. <strong>Display-only items</strong> (not sampled) are noted where applicable.</div>
+      </div>
+
+      <!-- Feb 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 February</h3><span class="ev-badge">⚡ Strips debut at Sprouts</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Hair Care Multi + Raspberry Multi + <em style="color:var(--td)">Display: Coconut Multimineral</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Mood/Cognition Strips + Organic Kids Multi Gummies + Women's Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Women's Liposomal Packets + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Raspberry Multi + Kids Multi Gummies + Kids Probiotic Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Mar 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 March</h3></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Hair Care Multi + <em style="color:var(--td)">Display: Coconut Multimineral</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Mood/Cognition Strips + Organic Kids Multi Gummies + Women's Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Women's Liposomal Packets + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Raspberry Multi + Kids Multi Gummies + Kids Probiotic Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Apr 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 April</h3><span class="ev-badge">⚡ Energy Strips → Sprouts | Kids Liquid → WF</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Hair Care Multi (Peach Mango) + Kids Liquid MV (Apple Berry) + Supergreen Gummies · <em style="color:var(--td)">Display: MV + Hair Growth Peach Mango Gummies</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Peach Mango MV + Energy Strips + Kids Probiotic Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Hair Care Multi</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Raspberry Multi + Kids Multi Gummies + Kids Probiotic Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- May 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 May</h3><span class="ev-badge">🍄 Lion's Mane → Sprouts</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Hair Care Multi (Peach Mango) + Kids Liquid MV (Apple Berry) + Sea Moss Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Peach Mango MV + Lion's Mane Liposomal + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Hair Care Multi</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Jun 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 June</h3><span class="ev-badge">🌿 Black Seed Oil + Sea Moss Drops → WF</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Kids MV Gummies (Organic) + Sea Moss Drops + Black Seed Oil Gummies · <em style="color:var(--td)">Display: Peach Mango Liquid MV</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Peach Mango MV + Lion's Mane Liposomal + Kids MV Gummies · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Hair Care Multi</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Jul 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 July</h3><span class="ev-badge">🌱 Spirulina + Strawberry LMV → WF | 🍄 Cordyceps → Sprouts</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Spirulina Gummies + Kids Probiotic Gummies + Strawberry Liquid LMV + Buy 1 Herbal SKU · <em style="color:var(--td)">Display: Peach Mango Liquid MV</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Organic Women's Multi Gummies + Adult Probiotic Gummies + Cordyceps Liposomal + Buy 1 Herbal SKU · <em style="color:var(--td)">Display: Peach LMV</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Hair Care Multi</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Aug 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 August</h3><span class="ev-badge">🌿 Herbal SKU gifting program starts</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Kids MV SF Gummies + Kids Probiotic Gummies + Raspberry MV + Supergreen Gummies + Buy 1 Herbal SKU · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Kids MV SF Gummies + Kids Probiotic Gummies + Raspberry MV + Buy 1 Herbal SKU · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Kids MV SF Gummies + Kids Probiotic Gummies + Raspberry MV · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+        </div>
+      </div>
+
+      <!-- Sep 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 September</h3><span class="ev-badge">💪 Creatine Gummies debut → WF | 🐉 Dragon Fruit → Sprouts</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val">Organic Kids MV Gummies + <strong>Creatine Gummies</strong> + Peach Mango Hair LMV + Buy 1 Herbal SKU · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">SF Women's Multi Gummies + Kids Probiotic Gummies + <strong>Dragon Fruit LMV</strong> + Buy 1 Herbal SKU · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Kids MV SF Gummies + Kids Probiotic Gummies + Peach Mango Hair LMV · <em style="color:var(--td)">Display: Coconut MM</em></div></div>
+        </div>
+      </div>
+
+      <!-- Oct 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 October</h3><span class="ev-badge">🍎 Kids Apple Berry LMV w/Lutein → WF</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val"><strong>Kids Apple Berry Blast LMV w/Lutein</strong> + Organic Vitamin C Gummies + Raspberry LMV 30oz</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Organic Vitamin C Gummies + Dragon Fruit Hair Growth LMV + Kids MV Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Vitamin C Gummies + Raspberry LMV + Kids MV Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Nov 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 November</h3><span class="ev-badge">💪 Creatine returns + 🌱 Spirulina → WF | 🧊 Probiotics display</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val"><strong>Creatine Gummies</strong> + Spirulina Gummies (Strawberry Lemonade 90ct) + LMV + Hair Growth Peach Mango · <em style="color:var(--td)">Display: Refrigerated Probiotics</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Organic Vitamin C Gummies + Dragon Fruit Hair Growth LMV + Kids MV Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Vitamin C Gummies + Raspberry LMV + Kids MV Gummies</div></div>
+        </div>
+      </div>
+
+      <!-- Dec 2025 -->
+      <div class="fb-month"><div class="fb-month-hdr"><h3>📅 December</h3><span class="ev-badge">⚡ Energy Strips return → Sprouts | 🧲 Magnesium + Dragon Fruit → WF</span></div>
+        <div style="display:grid;grid-template-columns:1fr;gap:8px;font-size:12px">
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--a)">Whole Foods</div><div class="val"><strong>Liquid Magnesium</strong> + MV Dragon Fruit + Women's MV Gummies · <em style="color:var(--td)">Display: Refrigerated Probiotics (on ice)</em></div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--g)">Sprouts</div><div class="val">Peach Mango LMV + <strong>Energy Strips</strong> + Kids Probiotic Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:#8B5CF6">Erewhon</div><div class="val">Raspberry Multi + Kids Multi Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">Natural Grocers</div><div class="val">Kids Probiotic Gummies + Raspberry MV + Kids MV Gummies</div></div>
+          <div class="ins-row"><div class="lbl" style="min-width:130px;color:var(--td)">All Others</div><div class="val">Vitamin C Gummies + Raspberry LMV + Kids MV Gummies</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 2025 MERCHANDISING TAB -->
+    <div id="mr24" class="tc">
+      <div class="ins-grid">
+        <div class="ins-card full" style="border-left:4px solid var(--a)">
+          <div class="ins-title">🏬 Merchandising Wins & Store Intel — 2024</div>
+          <div class="ins-desc" style="margin-bottom:16px">This section will be populated with monthly merchandising visit summaries including end cap wins, store staff feedback, overstock alerts, coupon feedback, and product education opportunities. Upload individual merchandising reports to generate monthly summaries.</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+            <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:16px">
+              <div style="font-size:13px;font-weight:700;color:var(--a);margin-bottom:8px">📋 Monthly Reports</div>
+              <div style="font-size:12px;color:var(--td);line-height:1.7">No merchandising reports uploaded yet. Once reports are provided, monthly summaries will appear here covering: store visit locations, end cap placements, shelf resets, staff feedback, and product education needs.</div>
+            </div>
+            <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:16px">
+              <div style="font-size:13px;font-weight:700;color:var(--g);margin-bottom:8px">🏆 Key Wins</div>
+              <div style="font-size:12px;color:var(--td);line-height:1.7">Awaiting data — will track: new end caps secured, check-lane placements, "Favorite Five" displays, store manager endorsements, and new shelf sections won.</div>
+            </div>
+            <div style="background:rgba(42,45,56,.5);border-radius:8px;padding:16px">
+              <div style="font-size:13px;font-weight:700;color:var(--r);margin-bottom:8px">⚠️ Issues & Opportunities</div>
+              <div style="font-size:12px;color:var(--td);line-height:1.7">Awaiting data — will track: overstock/expiration alerts, pricing discrepancies, coupon confusion reports, underperforming categories, and store staff education requests.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2025 QUALITY ISSUES TAB -->
+    <div id="qi24" class="tc">
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rad);padding:14px 20px;margin-bottom:16px;border-left:4px solid #F59E0B">
+        <div style="font-size:12px;color:var(--td);line-height:1.6">Reported item quality issues for 2025 will be populated when 2025 analytics data containing the negative feedback column is uploaded. Issues are auto-categorized from the "What negative feedback did customers focus on?" field.</div>
+      </div>
+      <div class="ins-grid">
+        <div class="ins-card full" style="border-left:4px solid #F59E0B">
+          <div class="ins-title">⚠️ Quality Issues — 2024</div>
+          <div class="ins-desc">Upload the 2025 full-year analytics report to populate this tab with categorized quality issue data, trend charts, and individual reports.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
   <div id="y25" class="year-panel">
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-hdr"><div class="kpi-lbl">Total Events</div><div class="kpi-tip">?<div class="tip">Total demo events for MRO in 2025.</div></div></div><div class="kpi-val">3,844</div><div class="kpi-sub">Full year 2025</div></div>
@@ -1135,6 +1626,56 @@ function buildStateTable(elId,states,total){
   const el=document.getElementById(elId); el.innerHTML='';
   states.forEach(s=>{el.innerHTML+=`<tr><td><strong>${s.s}</strong></td><td>${s.e.toLocaleString()}</td><td>${fmt$(s.r)}</td><td>$${(s.r/s.e).toFixed(2)}</td><td>${(s.e/total*100).toFixed(1)}%</td></tr>`});
 }
+
+// ============================================================
+// 2024 DATA
+// ============================================================
+const M24=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const d24={
+  ev:[668,608,485,710,710,631,848,933,1040,760,816,510],
+  sa:[85718.24,66186.88,44700.59,58674.46,80548.88,50706.64,71491.46,88860.89,106808.64,62352.27,62942.99,41590.2],
+  un:[6240,4487,3262,5785,5696,4507,8336,10649,10023,6913,5659,4433],
+  sh:[1290,834,786,1309,832,808,2017,1729,1796,1661,1113,860],
+  cn:[0,0,0,0,0,0,0,0,0,0,0,0]
+};
+const mc24={'Whole Foods':[245,203,137,161,179,176,160,220,381,378,262,290],'Sprouts':[192,137,117,289,230,179,456,489,489,242,374,73],'Central Market':[16,17,22,21,10,11,12,8,15,17,3,11],'Erewhon':[111,104,102,123,157,149,102,112,86,72,83,86],'Independents':[104,147,107,116,134,116,118,104,69,51,94,50]};
+const ch24=[{name:'Whole Foods',events:2792,revenue:402429.58},{name:'Sprouts',events:3267,revenue:222929.52},{name:'Erewhon',events:1287,revenue:85420.04},{name:'Independents',events:1210,revenue:81803.32},{name:'Central Market',events:163,revenue:27999.68}];
+const st24=[{s:'CA',e:3996,r:306179.25},{s:'TX',e:1249,r:150438.65},{s:'FL',e:1025,r:130400.21},{s:'AZ',e:827,r:78312.87},{s:'NM',e:331,r:33093.86},{s:'NY',e:257,r:25561.34},{s:'CO',e:237,r:9669.63},{s:'IL',e:195,r:24335.47},{s:'OR',e:155,r:13263.98},{s:'GA',e:121,r:23415.53},{s:'PA',e:115,r:9634.23},{s:'NV',e:107,r:7696.41},{s:'TN',e:47,r:2880.63},{s:'WA',e:22,r:4215.04},{s:'NJ',e:11,r:551.98}];
+const rg24=[{name:'West',events:4280,color:'#ED1C24'},{name:'Central',events:1444,color:'#F97316'},{name:'Southwest',events:1395,color:'#22C55E'},{name:'Southeast',events:1193,color:'#FACC15'},{name:'Atlantic',events:383,color:'#3B82F6'}];
+
+// 2024 Charts
+new Chart(document.getElementById('c24_evChain'),{type:'bar',data:{labels:M24,datasets:Object.entries(mc24).map(([n,d])=>({label:n,data:d,backgroundColor:CC[n],borderRadius:3,barPercentage:.7}))},options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},plugins:{legend:{position:'bottom'}}}});
+const ad24=d24.sa.map((s,i)=>+(s/d24.ev[i]).toFixed(2));
+new Chart(document.getElementById('c24_avgD'),{type:'line',data:{labels:M24,datasets:[lc('Avg $/Demo',ad24,'#ED1C24')]},options:{responsive:true,scales:{y:{beginAtZero:false}},plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('c24_units'),{type:'line',data:{labels:M24,datasets:[lc('Gross Units',d24.un,'#3B82F6')]},options:{responsive:true,scales:{y:{beginAtZero:true}},plugins:{legend:{display:false}}}});
+const netUn24=[5428,3903,2837,5032,4955,3921,7252,9264,8720,6014,4923,3856];
+new Chart(document.getElementById('c24_netUnits'),{type:'line',data:{labels:M24,datasets:[lc('Net Units',netUn24,'#8B5CF6')]},options:{responsive:true,scales:{y:{beginAtZero:true}},plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('c24_demos'),{type:'line',data:{labels:M24,datasets:[lc('Demos',d24.ev,'#22C55E')]},options:{responsive:true,scales:{y:{beginAtZero:true}},plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('c24_shop'),{type:'line',data:{labels:M24,datasets:[lc('Shoppers',d24.sh,'#F59E0B')]},options:{responsive:true,scales:{y:{beginAtZero:true}},plugins:{legend:{display:false}}}});
+new Chart(document.getElementById('c24_conv'),{type:'line',data:{labels:M24,datasets:[lc('Conv %',d24.cn,'#22C55E')]},options:{responsive:true,scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'%'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+'%'}}}}});
+
+buildBars('bars24',ch24,8719);
+new Chart(document.getElementById('c24_chainRev'),{type:'doughnut',data:{labels:ch24.map(c=>c.name),datasets:[{data:ch24.map(c=>c.revenue),backgroundColor:ch24.map(c=>CC[c.name]),borderWidth:0,hoverOffset:8}]},options:{responsive:true,plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:c=>'$'+c.parsed.toLocaleString()}}}}});
+buildChainTable('ctb24',ch24,8719);
+
+new Chart(document.getElementById('c24_regD'),{type:'doughnut',data:{labels:rg24.map(r=>r.name),datasets:[{data:rg24.map(r=>r.events),backgroundColor:rg24.map(r=>r.color),borderWidth:0,hoverOffset:8}]},options:{responsive:true,cutout:'55%',plugins:{legend:{position:'bottom'}}}});
+new Chart(document.getElementById('c24_topSt'),{type:'bar',data:{labels:st24.map(s=>s.s),datasets:[{data:st24.map(s=>s.e),backgroundColor:st24.map((_,i)=>i<3?'#ED1C24':i<7?'#F97316':'#3B82F6'),borderRadius:4,barPercentage:.7}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+buildStateTable('stb24',st24,8719);
+
+const ul24={wf:[96,83,77,89,85,88,74,95,129,164,125,123],sp:[101,82,66,105,85,84,141,141,135,107,152,54],cm:[9,9,8,9,8,8,7,8,9,9,3,8],er:[10,10,10,10,10,10,10,10,10,10,10,10],ind:[56,74,69,51,59,51,61,51,36,37,30,36]};
+new Chart(document.getElementById('c24_uloc'),{type:'bar',data:{labels:M24,datasets:[
+  {label:'Whole Foods',data:ul24.wf,backgroundColor:CC['Whole Foods'],borderRadius:3,barPercentage:.7},
+  {label:'Sprouts',data:ul24.sp,backgroundColor:CC['Sprouts'],borderRadius:3,barPercentage:.7},
+  {label:'Central Market',data:ul24.cm,backgroundColor:CC['Central Market'],borderRadius:3,barPercentage:.7},
+  {label:'Erewhon',data:ul24.er,backgroundColor:CC['Erewhon'],borderRadius:3,barPercentage:.7},
+  {label:'Independents',data:ul24.ind,backgroundColor:CC['Independents'],borderRadius:3,barPercentage:.7}
+]},options:{responsive:true,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},plugins:{legend:{position:'bottom'}}}});
+
+const eng24=[1290,834,786,1309,832,808,2017,1729,1796,1661,1113,860];
+new Chart(document.getElementById('c24_eng'),{type:'bar',data:{labels:M24,datasets:[
+  {label:'Customer Engagements',data:eng24,backgroundColor:'#F59E0B40',borderColor:'#F59E0B',borderWidth:2,borderRadius:3,barPercentage:.6,yAxisID:'y'},
+  {label:'Events',data:d24.ev,type:'line',borderColor:'#22C55E',backgroundColor:'#22C55E20',pointBackgroundColor:'#22C55E',borderWidth:2.5,pointRadius:4,tension:.4,yAxisID:'y1'}
+]},options:{responsive:true,scales:{y:{beginAtZero:true,position:'left',title:{display:true,text:'Engagements',color:'#F59E0B'}},y1:{beginAtZero:true,position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'Events',color:'#22C55E'}}},plugins:{legend:{position:'bottom'}}}});
 
 // ============================================================
 // 2025 DATA
