@@ -2421,7 +2421,7 @@ function formatReply(s){
 // ============================================================
 // EXCEL UPLOAD & LIVE UPDATE
 // ============================================================
-function handleUpload(input){
+window.handleUpload=function(input){
   const file=input.files[0];
   if(!file)return;
   const reader=new FileReader();
@@ -2793,7 +2793,7 @@ setTimeout(function(){try{loadDashData();}catch(e){console.log('Load error:',e);
 // ============================================================
 // SCHEDULE UPLOAD
 // ============================================================
-function handleScheduleUpload(input){
+window.handleScheduleUpload=function(input){
   const file=input.files[0];
   if(!file)return;
   const reader=new FileReader();
