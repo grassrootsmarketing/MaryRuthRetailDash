@@ -1537,7 +1537,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
       <div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rad);padding:20px;margin-bottom:20px;border-top:3px solid #F59E0B">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <div>
-            <div style="font-size:18px;font-weight:800;color:var(--tx)" id="projTitle">\U0001f4c5 March 2026 \u2014 355 Events Scheduled</div>
+            <div style="font-size:18px;font-weight:800;color:var(--tx)" id="projTitle">📅 March 2026 \u2014 355 Events Scheduled</div>
             <div style="font-size:12px;color:var(--td);margin-top:4px" id="projSubtitle">Across 15 states \u00b7 331 confirmed \u00b7 2 need BA assignment</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
@@ -1552,7 +1552,8 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="projMonthBar">
           <button class="mo-btn" data-pmo="Jan">Jan (Actuals)</button>
           <button class="mo-btn" data-pmo="Feb">Feb (Actuals)</button>
-          <button class="mo-btn active" data-pmo="Mar">Projected Schedule</button>
+          <button class="mo-btn" data-pmo="Mar">Mar (Actuals)</button>
+          <button class="mo-btn active" data-pmo="__sched__">Projected Schedule</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
           <div style="background:var(--bg);border-radius:var(--rad);padding:14px;text-align:center;border:1px solid var(--bd)"><div style="font-size:22px;font-weight:800;color:#22C55E" id="projTotalEv">355</div><div style="font-size:10px;color:var(--td);text-transform:uppercase;letter-spacing:.5px" id="projEvLabel">Scheduled Events</div></div>
@@ -1561,10 +1562,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
         </div>
       </div>
       <div class="cg">
-        <div class="cc"><div class="ct"><span class="i">\U0001f4ca</span> <span id="projWeekTitle">Weekly Event Distribution by Chain</span></div><canvas id="c_projWeek" height="280"></canvas></div>
-        <div class="cc"><div class="ct"><span class="i">\U0001f3ea</span> Events by Chain</div><canvas id="c_projChain" height="280"></canvas></div>
-        <div class="cc"><div class="ct"><span class="i">\U0001f5fa\ufe0f</span> Events by State</div><canvas id="c_projState" height="320"></canvas></div>
-        <div class="cc full"><div class="ct"><span class="i">\U0001f4cb</span> Chain \u00d7 State Breakdown</div>
+        <div class="cc"><div class="ct"><span class="i">📊</span> <span id="projWeekTitle">Weekly Event Distribution by Chain</span></div><canvas id="c_projWeek" height="280"></canvas></div>
+        <div class="cc"><div class="ct"><span class="i">🏪</span> Events by Chain</div><canvas id="c_projChain" height="280"></canvas></div>
+        <div class="cc"><div class="ct"><span class="i">🗺\ufe0f</span> Events by State</div><canvas id="c_projState" height="320"></canvas></div>
+        <div class="cc full"><div class="ct"><span class="i">📋</span> Chain \u00d7 State Breakdown</div>
           <table class="dt" style="width:100%"><thead id="projTableHead"><tr><th style="text-align:left">Chain</th><th>CA</th><th>TX</th><th>FL</th><th>NY</th><th>AZ</th><th>CO</th><th>GA</th><th>IL</th><th>PA</th><th>Other</th><th>Total</th></tr></thead>
           <tbody id="projTableBody">
             <tr><td style="font-weight:700;color:var(--r)">Whole Foods</td><td>43</td><td>44</td><td>25</td><td>25</td><td>16</td><td>20</td><td>18</td><td>14</td><td>14</td><td>34</td><td style="font-weight:700">253</td></tr>
@@ -2014,7 +2015,7 @@ function setProjMonth(mo){
   const MF=window._mf||{};
   const months=MF.months||M26;
   const mIdx=months.indexOf(mo);
-  const isSchedule=(mo==='Mar'); // Mar is schedule, Jan/Feb are actuals
+  const isSchedule=(mo==='__sched__'); // __sched__ shows projected schedule, everything else shows actuals
   
   if(!isSchedule && mIdx>=0){
     // ACTUALS MODE - show actual performance from analytics data
@@ -2026,7 +2027,7 @@ function setProjMonth(mo){
     const stSet=new Set(stData.map(s=>s.s));
     
     // Update header
-    document.getElementById('projTitle').textContent='\u0001f4ca '+mo+' 2026 \u2014 Actual Performance';
+    document.getElementById('projTitle').textContent='\ud83d\udcca '+mo+' 2026 \u2014 Actual Performance';
     document.getElementById('projSubtitle').textContent=ev+' events completed across '+stSet.size+' states';
     document.getElementById('projTotalEv').textContent=ev;
     document.getElementById('projEvLabel').textContent='Actual Events';
@@ -2074,7 +2075,7 @@ function setProjMonth(mo){
     }
   }else{
     // SCHEDULE MODE - restore the default schedule view
-    document.getElementById('projTitle').textContent='\U0001f4c5 March 2026 \u2014 355 Events Scheduled';
+    document.getElementById('projTitle').textContent='📅 March 2026 \u2014 355 Events Scheduled';
     document.getElementById('projSubtitle').textContent='Across 15 states \u00b7 331 confirmed \u00b7 2 need BA assignment';
     document.getElementById('projTotalEv').textContent='355';
     document.getElementById('projEvLabel').textContent='Scheduled Events';
