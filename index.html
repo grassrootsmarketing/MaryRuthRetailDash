@@ -2392,7 +2392,7 @@ async function sendMsg(){
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
@@ -2400,6 +2400,7 @@ async function sendMsg(){
         messages:chatHistory.slice(-10)
       })
     });
+    if(!resp.ok){const errData=await resp.json().catch(()=>({}));throw new Error(errData.error?.message||'API error '+resp.status);}
     const data=await resp.json();
     const reply=data.content?.map(b=>b.text||'').join('')||'Sorry, I couldn\'t process that. Try again!';
     chatHistory.push({role:'assistant',content:reply});
@@ -2410,7 +2411,7 @@ async function sendMsg(){
   }catch(e){
     const el=document.getElementById('typing');
     if(el)el.remove();
-    msgs.innerHTML+=`<div class="ai-msg bot">Something went wrong — please try again.</div>`;
+    msgs.innerHTML+=`<div class="ai-msg bot">The chatbot requires an API key to function on GitHub Pages. For now, use the dashboard filters and charts to explore the data, or ask me questions in our chat.</div>`;
   }
   document.getElementById('ai-send').disabled=false;
   msgs.scrollTop=msgs.scrollHeight;
@@ -2671,6 +2672,14 @@ function processUpload(rawData,filename){
     });
     projBtns+='<button class="mo-btn active" data-pmo="__sched__">Projected Schedule</button>';
     projBar.innerHTML=projBtns;
+  }
+  
+  // Rebuild View Month bar with new months
+  const moBar=document.getElementById('monthBar26');
+  if(moBar){
+    let moBtns='<span class="mo-label">View Month</span><button class="mo-btn active" data-mo="YTD">YTD</button>';
+    activeMonths.forEach(m=>{moBtns+='<button class="mo-btn" data-mo="'+m+'">'+m+'</button>';});
+    moBar.innerHTML=moBtns;
   }
   
   // Switch to 2026 tab
