@@ -2390,9 +2390,9 @@ async function sendMsg(){
   chatHistory.push({role:'user',content:msg});
   
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch('https://mro-chat-proxy.grassrootsmarketing.workers.dev',{
       method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
@@ -2411,7 +2411,7 @@ async function sendMsg(){
   }catch(e){
     const el=document.getElementById('typing');
     if(el)el.remove();
-    msgs.innerHTML+=`<div class="ai-msg bot">The chatbot requires an API key to function on GitHub Pages. For now, use the dashboard filters and charts to explore the data, or ask me questions in our chat.</div>`;
+    msgs.innerHTML+=`<div class="ai-msg bot">Something went wrong — please try again.</div>`;
   }
   document.getElementById('ai-send').disabled=false;
   msgs.scrollTop=msgs.scrollHeight;
