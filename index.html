@@ -2686,7 +2686,7 @@ function processUpload(rawData,filename){
   switchYear('y26');
 }
 
-const BLOB_URL='https://jsonblob.com/api/jsonBlob/019d231a-ba82-7abc-b13f-7464e5b58a96';
+const BLOB_URL='https://mro-chat-proxy.grassrootsmarketing.workers.dev/data';
 
 function saveDashData(data){
   fetch(BLOB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
