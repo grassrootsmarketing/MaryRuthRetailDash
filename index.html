@@ -148,6 +148,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 </style>
 </head>
 <body>
+<div id="loadOverlay" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center;color:var(--td)"><div style="font-size:24px;margin-bottom:8px">📊</div><div style="font-size:13px">Loading dashboard...</div></div>
+</div>
 
 <div class="header">
   <div class="header-left">
@@ -2696,7 +2699,7 @@ function saveDashData(data){
 
 function loadDashData(){
   fetch(BLOB_URL).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(data=>{
-    if(!data||!data.v||data.v<2||!data.months)return;
+    if(!data||!data.v||data.v<2||!data.months){hideOverlay();return;}
     console.log('Loading saved data from',data.ts,'file:',data.file);
     try{
     
@@ -2821,11 +2824,16 @@ function loadDashData(){
       setTimeout(()=>banner.classList.remove('show'),5000);
     }
     }catch(innerErr){console.error('Error applying saved data:',innerErr);}
-  }).catch(e=>console.log('No saved data, using defaults'));
+    hideOverlay();
+  }).catch(e=>{console.log('No saved data, using defaults');hideOverlay();});
 }
+function hideOverlay(){const o=document.getElementById('loadOverlay');if(o){o.style.opacity='0';setTimeout(()=>o.remove(),300);}}
+// Failsafe: remove overlay after 3s no matter what
+setTimeout(hideOverlay,3000);
 
 // Load saved data on page load - DISABLED for debugging
-setTimeout(function(){try{loadDashData();}catch(e){console.log('Load error:',e);}},1500);
+// Load saved data immediately (charts already initialized above)
+try{loadDashData();}catch(e){console.log('Load error:',e);}
 
 // ============================================================
 // SCHEDULE UPLOAD
