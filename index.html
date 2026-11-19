@@ -924,9 +924,15 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
         </div>
       </div>
 
-      <div class="fb-summary" style="border-left:4px solid var(--a)">
-        <h3>🛒 Most Requested Products & Formats — 2025</h3>
-        <div style="font-size:12px;color:var(--td);line-height:1.6;margin-bottom:12px">Sourced from 1,872 customer responses to "What items would customers like to see MRO make?" (field added Feb 2025) plus shopper comments and quotes captured by brand ambassadors throughout the year.</div>
+      <div class="fb-summary" style="border-left:4px solid var(--a);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+        <div>
+          <h3>🛒 Most Requested Products & Formats — 2025</h3>
+          <div style="font-size:12px;color:var(--td);line-height:1.6;margin-top:6px">Sourced from 1,872 customer responses to "What items would customers like to see MRO make?" (field added Feb 2025) plus shopper comments and quotes captured by brand ambassadors throughout the year.</div>
+        </div>
+        <button onclick="generateOnePager()" style="flex-shrink:0;padding:10px 20px;background:var(--r);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Generate One-Pager
+        </button>
       </div>
 
       <div class="ins-grid">
@@ -2986,6 +2992,132 @@ function processSchedule(rows,filename){
   // Update last updated date
   const schedDate=document.getElementById('schedLastUpdate');
   if(schedDate)schedDate.textContent='Last Updated: '+new Date().toLocaleDateString();
+}
+
+// ============================================================
+// GENERATE ONE-PAGER (Customer Requests)
+// ============================================================
+function generateOnePager(){
+  const w=window.open('','_blank');
+  if(!w){alert('Pop-up blocked. Please allow pop-ups for this site.');return;}
+  const today=new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  w.document.write(`<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MRO Customer Requests One-Pager</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@page{size:letter;margin:.5in}
+body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;max-width:8.5in;margin:0 auto;padding:32px 40px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #1a1a1a}
+.hdr-left h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.hdr-left h1 span{color:#ED1C24}
+.hdr-left p{font-size:11px;color:#888;margin-top:6px;letter-spacing:.3px}
+.hdr-right{text-align:right;font-size:10px;color:#999;line-height:1.6}
+.hdr-right strong{color:#1a1a1a;font-size:11px}
+.hero{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.hero-card{border-radius:10px;padding:18px 16px;text-align:center;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.hero-card.gold{background:#fffbeb;border:1px solid #fde68a}.hero-card.gold::before{background:#f59e0b}
+.hero-card.silver{background:#f0fdf4;border:1px solid #bbf7d0}.hero-card.silver::before{background:#22c55e}
+.hero-card.bronze{background:#eff6ff;border:1px solid #bfdbfe}.hero-card.bronze::before{background:#3b82f6}
+.hero-medal{font-size:22px;margin-bottom:4px}
+.hero-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:2px}
+.hero-count{font-size:32px;font-weight:800;line-height:1}
+.hero-count.gold-t{color:#d97706}.hero-count.silver-t{color:#16a34a}.hero-count.bronze-t{color:#2563eb}
+.hero-unit{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#999;margin-top:2px}
+.hero-quote{font-size:9.5px;color:#777;font-style:italic;margin-top:8px;line-height:1.4;padding-top:8px;border-top:1px solid rgba(0,0,0,.06)}
+.section-hdr{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#999;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-hdr::after{content:'';flex:1;height:1px;background:#e5e5e5}
+.ranked{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:22px}
+.rank-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;background:#fff;border:1px solid #f0f0ed}
+.rank-num{width:22px;height:22px;border-radius:50%;background:#1a1a1a;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rank-body{flex:1;min-width:0}
+.rank-name{font-size:12px;font-weight:700}
+.rank-detail{font-size:10px;color:#888;margin-top:1px}
+.rank-bar-wrap{width:48px;height:6px;background:#f0f0ed;border-radius:3px;flex-shrink:0;overflow:hidden}
+.rank-bar{height:100%;border-radius:3px;background:#ED1C24}
+.rank-mentions{font-size:10px;font-weight:700;color:#ED1C24;flex-shrink:0;width:28px;text-align:right}
+.niche{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.niche-tag{background:#fff;border:1px solid #e5e5e5;border-radius:20px;padding:4px 10px;font-size:10px;color:#555;display:flex;align-items:center;gap:4px}
+.niche-tag .ct{font-weight:700;color:#ED1C24}
+.footer{border-top:1px solid #e5e5e5;padding-top:12px;display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#bbb}
+.footer-logo{font-weight:700;color:#ED1C24;font-size:10px}
+.print-bar{background:#333;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;position:fixed;top:0;left:0;right:0;z-index:999;font-family:'DM Sans',sans-serif}
+.print-bar button{padding:8px 20px;background:#ED1C24;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-size:13px}
+@media print{.print-bar{display:none}body{padding:0}}
+</style></head><body>
+<div class="print-bar">
+  <span>Customer Requests One-Pager</span>
+  <div><button onclick="window.print()">Print / Save as PDF</button></div>
+</div>
+<div style="margin-top:50px">
+<div class="hdr">
+  <div class="hdr-left">
+    <h1>What Customers Are <span>Asking For</span></h1>
+    <p>Product requests collected from in-store demo events</p>
+  </div>
+  <div class="hdr-right">
+    <strong>MaryRuth Organics</strong><br>
+    3,844 demo events &middot; 17 states<br>
+    1,872 direct customer responses
+  </div>
+</div>
+<div class="hero">
+  <div class="hero-card gold">
+    <div class="hero-medal">&#x1F947;</div>
+    <div class="hero-name">Capsule / Pill Form</div>
+    <div class="hero-count gold-t">113</div>
+    <div class="hero-unit">mentions</div>
+    <div class="hero-quote">"I wish she made vitamins in pill/capsule form - I can't do gummies or liquids."</div>
+  </div>
+  <div class="hero-card silver">
+    <div class="hero-medal">&#x1F948;</div>
+    <div class="hero-name">Sugar-Free Options</div>
+    <div class="hero-count silver-t">98</div>
+    <div class="hero-unit">mentions</div>
+    <div class="hero-quote">"I wish all her products were sugar-free - especially the kids gummies."</div>
+  </div>
+  <div class="hero-card bronze">
+    <div class="hero-medal">&#x1F949;</div>
+    <div class="hero-name">Collagen Products</div>
+    <div class="hero-count bronze-t">59</div>
+    <div class="hero-unit">mentions</div>
+    <div class="hero-quote">"Collagen gummies, powder, liquid - I'd buy any format from MRO."</div>
+  </div>
+</div>
+<div class="section-hdr">Full Rankings &middot; Top 15 Requests</div>
+<div class="ranked">
+  <div class="rank-row"><div class="rank-num">4</div><div class="rank-body"><div class="rank-name">Immunity / Cold &amp; Flu</div><div class="rank-detail">Kids immunity, allergy relief, immunity strips</div></div><div class="rank-mentions">50</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:44%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">5</div><div class="rank-body"><div class="rank-name">Protein / Muscle Building</div><div class="rank-detail">Protein powder, higher-dose creatine (5-10g)</div></div><div class="rank-mentions">48</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:42%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">6</div><div class="rank-body"><div class="rank-name">Men's Products</div><div class="rank-detail">Hormone support, dedicated men's line</div></div><div class="rank-mentions">46</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:41%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">7</div><div class="rank-body"><div class="rank-name">Smaller Sizes</div><div class="rank-detail">15oz bottles, travel packs, single-serve pouches</div></div><div class="rank-mentions">42</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:37%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">8</div><div class="rank-body"><div class="rank-name">New Flavors</div><div class="rank-detail">Strawberry hair growth, vanilla, lemon lime strips</div></div><div class="rank-mentions">41</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:36%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">9</div><div class="rank-body"><div class="rank-name">Omega / DHA</div><div class="rank-detail">Adult omega at Sprouts, higher DHA/EPA</div></div><div class="rank-mentions">40</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:35%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">10</div><div class="rank-body"><div class="rank-name">Calcium</div><div class="rank-detail">Calcium gummy w/ D3, liquid calcium</div></div><div class="rank-mentions">36</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:32%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">11</div><div class="rank-body"><div class="rank-name">Hair Growth Standalone</div><div class="rank-detail">Hair formula without the multivitamin</div></div><div class="rank-mentions">28</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:25%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">12</div><div class="rank-body"><div class="rank-name">Magnesium (New Forms)</div><div class="rank-detail">Glycinate, lotion, powder formats</div></div><div class="rank-mentions">27</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:24%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">13</div><div class="rank-body"><div class="rank-name">Pet Supplements</div><div class="rank-detail">Dog and cat vitamins</div></div><div class="rank-mentions">25</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:22%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">14</div><div class="rank-body"><div class="rank-name">Energy Products</div><div class="rank-detail">Energy shots, drinks, more caffeine in strips</div></div><div class="rank-mentions">25</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:22%"></div></div></div>
+  <div class="rank-row"><div class="rank-num">15</div><div class="rank-body"><div class="rank-name">Glass Containers</div><div class="rank-detail">Eco-friendly packaging for 30oz liquids</div></div><div class="rank-mentions">21</div><div class="rank-bar-wrap"><div class="rank-bar" style="width:19%"></div></div></div>
+</div>
+<div class="section-hdr">Also Mentioned</div>
+<div class="niche">
+  <div class="niche-tag">Beet / Superfood Gummies <span class="ct">24</span></div>
+  <div class="niche-tag">Fiber (liquid) <span class="ct">20</span></div>
+  <div class="niche-tag">Organic Versions <span class="ct">20</span></div>
+  <div class="niche-tag">Menopause Support <span class="ct">15+</span></div>
+  <div class="niche-tag">Kids Iron Gummies <span class="ct">15</span></div>
+  <div class="niche-tag">Seniors 55+ MV <span class="ct">10+</span></div>
+  <div class="niche-tag">Hair Growth Gummy <span class="ct">10+</span></div>
+  <div class="niche-tag">Kosher Certification <span class="ct">5+</span></div>
+</div>
+<div class="footer">
+  <div><span class="footer-logo">Grassroots Marketing &times; MaryRuth Organics</span></div>
+  <div>Data from 3,844 in-store demo events &middot; Prepared ${today}</div>
+</div>
+</div></body></html>`);
+  w.document.close();
 }
 
 function animateKPI(el,newVal){
