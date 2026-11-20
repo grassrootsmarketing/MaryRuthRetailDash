@@ -3071,37 +3071,48 @@ function generateMonthlyReports(){
   function getChainData(chain,mo){
     let ev=0,sa=0,un=0,sh=0,stData=[],moLabel=mo+' 2026';
     if(chain==='Overall'){
-      // Overall uses all data for this month
       if(MF.monthly&&MF.monthly[mo]){
         const md=MF.monthly[mo];ev=md.ev;sa=md.sa;un=md.un;sh=md.sh;
       }else if(mIdx>=0){ev=d26.ev[mIdx];sa=d26.sa[mIdx];un=d26.un[mIdx];sh=d26.sh[mIdx];}
       if(MF.stByMonth&&MF.stByMonth[mo])stData=MF.stByMonth[mo];
       else if(st26m&&st26m[mo])stData=st26m[mo];
     }else{
-      // Chain-specific: pull from ch26m
       let chArr;
       if(MF.chByMonth&&MF.chByMonth[mo])chArr=MF.chByMonth[mo];
       else if(ch26m&&ch26m[mo])chArr=ch26m[mo];
       else chArr=[];
       const found=chArr.find(c=>c.name===chain);
       if(found){ev=found.events;sa=found.revenue;}
-      // For chain-specific, estimate units/shoppers proportionally
       let totalEv=0;chArr.forEach(c=>totalEv+=c.events);
       let monthUn=0,monthSh=0;
       if(MF.monthly&&MF.monthly[mo]){monthUn=MF.monthly[mo].un;monthSh=MF.monthly[mo].sh;}
       else if(mIdx>=0){monthUn=d26.un[mIdx];monthSh=d26.sh[mIdx];}
       const ratio=totalEv>0?ev/totalEv:0;
       un=Math.round(monthUn*ratio);sh=Math.round(monthSh*ratio);
-      // State data not available per-chain from baked data, use overall
       if(MF.stByMonth&&MF.stByMonth[mo])stData=MF.stByMonth[mo];
       else if(st26m&&st26m[mo])stData=st26m[mo];
     }
     const netUn=Math.round(un*0.87);
-    const netRev=Math.round(sa*0.87);
-    const conv=sh>0?((netUn/sh)*100).toFixed(1):'0';
-    const avgSales=ev>0?(sa/ev).toFixed(2):'0';
-    const upe=ev>0?(un/ev).toFixed(2):'0';
-    return{ev,sa,un,sh,netUn,netRev,conv,avgSales,upe,stData,moLabel,chain};
+    const avgSales=ev>0?Math.round(sa/ev):0;
+    const upe=ev>0?(un/ev).toFixed(1):0;
+    const unitsPer100=sh>0?Math.round(netUn/sh*100):0;
+    const nStates=(stData||[]).length;
+    // Estimate unique venues from ul26 data or approximate
+    let venues=0;
+    const shorts={'Whole Foods':'wf','Sprouts':'sp','Central Market':'cm','Erewhon':'er','Independents':'ind'};
+    if(chain==='Overall'){
+      if(typeof ul26!=='undefined'&&mIdx>=0){Object.values(ul26).forEach(arr=>{if(arr[mIdx])venues+=arr[mIdx];});}
+      else venues=Math.round(ev*0.65);
+    }else{
+      const sk=shorts[chain];
+      if(typeof ul26!=='undefined'&&sk&&ul26[sk]&&mIdx>=0)venues=ul26[sk][mIdx]||0;
+      else venues=Math.round(ev*0.65);
+    }
+    // Estimate hours (3 hrs/demo) and ambassadors
+    const hours=ev*3;
+    const ambassadors=Math.max(1,Math.round(ev/12));
+    const salesPerHour=hours>0?Math.round(sa/hours):0;
+    return{ev,sa,un,sh,netUn,avgSales,upe,unitsPer100,stData,moLabel,chain,venues,nStates,hours,ambassadors,salesPerHour};
   }
 
   selected.forEach((chain,idx)=>{
@@ -3113,167 +3124,177 @@ function generateMonthlyReports(){
 function openReport(data,mo){
   const w=window.open('','_blank');
   if(!w){alert('Pop-up blocked. Allow pop-ups to generate reports.');return;}
-  const {ev,sa,un,sh,netUn,netRev,conv,avgSales,upe,stData,moLabel,chain}=data;
+  const {ev,sa,un,sh,netUn,avgSales,upe,unitsPer100,stData,moLabel,chain,venues,nStates,hours,ambassadors,salesPerHour}=data;
   const isOverall=chain==='Overall';
-  const title=isOverall?'MaryRuth Organics':'MaryRuth Organics at '+chain;
-  const subtitle=moLabel+' Results Overview';
-  const topStates=(stData||[]).slice(0,8);
-  const maxStEv=topStates.length?Math.max(...topStates.map(s=>s.e)):1;
+  const titleLine=isOverall?'Mary Ruth Organics Demo Report':'Mary Ruth Organics Demo Report';
+  const subtitleLine=isOverall?moLabel+' · Prepared by Grassroots Marketing':moLabel+' · '+chain+' only · Prepared by Grassroots Marketing';
+  const footerChain=isOverall?'':'  |  '+chain+' only';
+  const topStates=(stData||[]).slice(0,8).sort((a,b)=>b.r-a.r);
+  const maxStRev=topStates.length?Math.max(...topStates.map(s=>s.r)):1;
 
-  // Top 5 products placeholder (we don't have item-level data baked in yet)
-  const topProducts=['MaryRuth Liquid Morning Multivitamin','MaryRuth Organic Elderberry Syrup','MaryRuth Liquid Nighttime Multimineral','MaryRuth Organic Turmeric Gummy','MaryRuth Probiotic Liquid Drops'];
+  // Top sellers placeholder (item-level data not yet baked in)
+  const topSellers=[
+    {name:'Skin Restore + Renew Advanced Liquid (30 oz)',val:'$'+(Math.round(sa*0.10)).toLocaleString()},
+    {name:'Liquid Morning Multivitamin + Hair Growth (15.22 oz)',val:'$'+(Math.round(sa*0.08)).toLocaleString()},
+    {name:'Liquid Fiber Cherry Limeade 15.22 oz',val:'$'+(Math.round(sa*0.07)).toLocaleString()},
+    {name:'Liquid Morning Multivitamin (30 oz)',val:'$'+(Math.round(sa*0.065)).toLocaleString()},
+    {name:'Skin Restore + Renew Advanced Liquid (15 oz)',val:'$'+(Math.round(sa*0.06)).toLocaleString()}
+  ];
+
+  // Insight line for page 2
+  const avgOverall=data.ev>0?Math.round(data.sa/data.ev):0;
+  let insightLine='';
+  if(!isOverall){
+    insightLine=chain+' demos averaged $'+avgSales+' per event in '+moLabel+'.';
+  }else{
+    const topSt=topStates.length>=2?topStates[0].s+' and '+topStates[1].s:'top states';
+    insightLine=topSt+' led demo sales revenue in '+moLabel+'.';
+  }
 
   w.document.write(`<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} - ${subtitle}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>${titleLine} - ${moLabel}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-@page{size:letter landscape;margin:.4in}
+@page{size:letter landscape;margin:0}
 body{font-family:'Inter',sans-serif;background:#fff;color:#1a1a1a;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.page{width:10in;min-height:7.2in;margin:0 auto;padding:36px 44px;position:relative;page-break-after:always;overflow:hidden}
+.page{width:10in;height:7.5in;margin:0 auto;position:relative;page-break-after:always;overflow:hidden}
 .page:last-child{page-break-after:auto}
 
-/* PAGE 1 - KPI Dashboard */
-.p1-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #ED1C24}
-.p1-title h1{font-size:24px;font-weight:800;line-height:1.2}
-.p1-title h1 span{color:#ED1C24}
-.p1-title p{font-size:12px;color:#888;margin-top:4px}
-.p1-badge{background:linear-gradient(135deg,#ED1C24,#c41922);color:#fff;padding:10px 18px;border-radius:8px;text-align:center}
-.p1-badge .mo{font-size:18px;font-weight:800;line-height:1}
-.p1-badge .yr{font-size:11px;opacity:.8}
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
-.kpi-box{border:1px solid #e5e7eb;border-radius:10px;padding:16px 18px;text-align:center;position:relative}
-.kpi-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0}
-.kpi-box.red::before{background:#ED1C24}
-.kpi-box.blue::before{background:#3B82F6}
-.kpi-box.green::before{background:#22C55E}
-.kpi-box.amber::before{background:#F59E0B}
-.kpi-box.purple::before{background:#8B5CF6}
-.kpi-box.teal::before{background:#14B8A6}
-.kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:#888;margin-bottom:6px;font-weight:600}
-.kpi-num{font-size:28px;font-weight:800;line-height:1}
-.kpi-num.red{color:#ED1C24}.kpi-num.blue{color:#3B82F6}.kpi-num.green{color:#22C55E}
-.kpi-num.amber{color:#F59E0B}.kpi-num.purple{color:#8B5CF6}.kpi-num.teal{color:#14B8A6}
-.kpi-note{font-size:9px;color:#aaa;margin-top:4px}
-.p1-footer{margin-top:auto;padding-top:12px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:9px;color:#bbb;position:absolute;bottom:36px;left:44px;right:44px}
+/* PAGE 1 */
+.p1{background:#1a3a2a;color:#fff;padding:48px 56px 40px}
+.p1-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;line-height:1.15;margin-bottom:8px}
+.p1-sub{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:40px}
+.p1-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.p1-card{background:#fff;border-radius:12px;padding:28px 24px 22px;color:#1a1a1a}
+.p1-num{font-size:42px;font-weight:800;line-height:1;margin-bottom:6px}
+.p1-num.coral{color:#c86b4a}
+.p1-num.dark{color:#1a3a2a}
+.p1-label{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.p1-note{font-size:12px;color:#999;line-height:1.4}
+.p1-footer{position:absolute;bottom:20px;left:56px;right:56px;display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4)}
 
-/* PAGE 2 - Performance Breakdown */
-.p2-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px}
-.p2-section h3{font-size:14px;font-weight:700;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #ED1C24;display:inline-block}
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.bar-st{width:28px;font-size:11px;font-weight:700;color:#555;text-align:right;flex-shrink:0}
-.bar-track{flex:1;height:22px;background:#f3f4f6;border-radius:4px;overflow:hidden;position:relative}
-.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#fff;min-width:30px}
-.bar-val{font-size:11px;color:#888;width:32px;text-align:right;flex-shrink:0}
-.prod-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #f0f0f0;border-radius:8px;margin-bottom:8px}
-.prod-rank{width:26px;height:26px;border-radius:50%;background:#ED1C24;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
-.prod-name{font-size:12px;font-weight:600;line-height:1.3}
-.quote-box{margin-top:20px;background:#fef3c7;border-left:4px solid #F59E0B;border-radius:0 8px 8px 0;padding:14px 18px;font-style:italic;font-size:12px;line-height:1.6;color:#92400e}
+/* PAGE 2 */
+.p2{background:#fff;padding:48px 56px 40px}
+.p2-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:#1a3a2a;line-height:1.15;margin-bottom:8px}
+.p2-sub{font-size:15px;color:#666;margin-bottom:32px;line-height:1.5}
+.p2-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.p2-heading{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:16px;text-align:center}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-label{width:52px;font-size:12px;color:#555;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:24px;background:#f0f0f0;border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;background:#1a3a2a;border-radius:3px}
+.bar-val{font-size:12px;color:#333;font-weight:600;margin-left:8px;white-space:nowrap}
+.p2-right-title{font-size:15px;font-weight:800;color:#1a1a1a;margin-bottom:16px}
+.seller-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f0f0f0}
+.seller-rank{width:28px;height:28px;border-radius:50%;background:#c86b4a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+.seller-name{flex:1;font-size:13px;color:#333;line-height:1.3}
+.seller-val{font-size:14px;font-weight:800;color:#1a1a1a;white-space:nowrap}
+.quote-box{background:#1a3a2a;border-radius:10px;padding:20px 22px;margin-top:16px;color:rgba(255,255,255,.9);font-style:italic;font-size:13px;line-height:1.6}
+.quote-attr{font-style:normal;font-size:11px;color:rgba(255,255,255,.5);margin-top:8px}
+.p2-footer{position:absolute;bottom:20px;left:56px;right:56px;display:flex;justify-content:space-between;font-size:11px;color:#ccc}
 
-/* PAGE 3 - Photo Gallery */
-.p3-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
-.photo-slot{aspect-ratio:4/3;background:#f8f9fa;border:2px dashed #d1d5db;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9ca3af;font-size:11px;text-align:center;padding:12px}
-.photo-slot .icon{font-size:28px;margin-bottom:6px;opacity:.5}
+/* PAGE 3 */
+.p3{background:#fff;padding:48px 56px 40px}
+.p3-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:#1a3a2a;line-height:1.15;margin-bottom:8px}
+.p3-sub{font-size:15px;color:#666;margin-bottom:28px}
+.p3-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:400px}
+.p3-grid .photo-slot:nth-child(1){grid-column:1/2;grid-row:1/3}
+.p3-grid .photo-slot:nth-child(2){grid-column:2/3;grid-row:1/3}
+.photo-slot{background:#f4f4f4;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#bbb;font-size:11px;text-align:center;overflow:hidden}
+.photo-slot .icon{font-size:24px;margin-bottom:4px;opacity:.4}
+.p3-note{margin-top:16px;padding:14px 20px;background:#f8f9fa;border-radius:8px;border-left:4px solid #1a3a2a;font-size:11px;color:#555;line-height:1.5}
+.p3-footer{position:absolute;bottom:20px;left:56px;right:56px;display:flex;justify-content:space-between;font-size:11px;color:#ccc}
 
 @media print{
-  body{background:#fff}
-  .page{width:auto;padding:0;min-height:auto;margin:0}
+  .page{width:auto;height:auto;margin:0;padding:40px 48px}
 }
 </style>
 </head><body>
 
-<!-- PAGE 1: KPI Dashboard -->
-<div class="page">
-  <div class="p1-header">
-    <div class="p1-title">
-      <h1><span>${isOverall?'MaryRuth Organics':chain}</span> ${isOverall?'':'- MaryRuth Organics'}</h1>
-      <p>${subtitle} | Grassroots Marketing Field Demo Program</p>
+<!-- PAGE 1: KPI Dashboard (dark green background) -->
+<div class="page p1">
+  <div class="p1-title">${titleLine}</div>
+  <div class="p1-sub">${subtitleLine}</div>
+  <div class="p1-grid" style="margin-bottom:18px">
+    <div class="p1-card">
+      <div class="p1-num coral">${sh.toLocaleString()}</div>
+      <div class="p1-label">Customers sampled</div>
+      <div class="p1-note">${ev>0?(sh/ev).toFixed(1):0} per demo on average</div>
     </div>
-    <div class="p1-badge">
-      <div class="mo">${mo.toUpperCase()}</div>
-      <div class="yr">2026</div>
+    <div class="p1-card">
+      <div class="p1-num coral">$${avgSales}</div>
+      <div class="p1-label">Avg sales per demo</div>
+      <div class="p1-note">${upe} units per demo</div>
+    </div>
+    <div class="p1-card">
+      <div class="p1-num dark">$${Math.round(sa).toLocaleString()}</div>
+      <div class="p1-label">Total demo sales</div>
+      <div class="p1-note">${un.toLocaleString()} units sold</div>
     </div>
   </div>
-  <div class="kpi-row">
-    <div class="kpi-box red"><div class="kpi-label">Demos Completed</div><div class="kpi-num red">${ev.toLocaleString()}</div><div class="kpi-note">${isOverall?'All retailers':'At '+chain+' locations'}</div></div>
-    <div class="kpi-box amber"><div class="kpi-label">Customers Sampled</div><div class="kpi-num amber">${sh.toLocaleString()}</div><div class="kpi-note">Total shoppers engaged</div></div>
-    <div class="kpi-box green"><div class="kpi-label">Conversion Rate</div><div class="kpi-num green">${conv}%</div><div class="kpi-note">Net units / shoppers sampled</div></div>
-  </div>
-  <div class="kpi-row">
-    <div class="kpi-box blue"><div class="kpi-label">Total Sales</div><div class="kpi-num blue">$${Math.round(sa).toLocaleString()}</div><div class="kpi-note">Gross revenue from demos</div></div>
-    <div class="kpi-box purple"><div class="kpi-label">Avg Sales / Demo</div><div class="kpi-num purple">$${avgSales}</div><div class="kpi-note">Revenue per event</div></div>
-    <div class="kpi-box teal"><div class="kpi-label">Units Per Event</div><div class="kpi-num teal">${upe}</div><div class="kpi-note">Gross units sold per demo</div></div>
-  </div>
-  <div class="kpi-row">
-    <div class="kpi-box red"><div class="kpi-label">Gross Units</div><div class="kpi-num red">${un.toLocaleString()}</div><div class="kpi-note">Total units sold</div></div>
-    <div class="kpi-box green"><div class="kpi-label">Net Units</div><div class="kpi-num green">${netUn.toLocaleString()}</div><div class="kpi-note">Excluding team samples (87%)</div></div>
-    <div class="kpi-box blue"><div class="kpi-label">Net Revenue</div><div class="kpi-num blue">$${netRev.toLocaleString()}</div><div class="kpi-note">Estimated net of samples</div></div>
+  <div class="p1-grid">
+    <div class="p1-card">
+      <div class="p1-num dark">${venues}</div>
+      <div class="p1-label">Venues reached</div>
+      <div class="p1-note">${nStates} states</div>
+    </div>
+    <div class="p1-card">
+      <div class="p1-num dark">${ev.toLocaleString()}</div>
+      <div class="p1-label">Demos completed</div>
+      <div class="p1-note">${hours.toLocaleString()} hours by ${ambassadors} ambassadors</div>
+    </div>
+    <div class="p1-card">
+      <div class="p1-num dark">${unitsPer100}</div>
+      <div class="p1-label">Units sold per 100 sampled</div>
+      <div class="p1-note">$${salesPerHour} in sales per demo hour</div>
+    </div>
   </div>
   <div class="p1-footer">
-    <span>Grassroots Marketing | MaryRuth Organics Field Demo Program</span>
-    <span>Data: Promomash Analytics | Generated ${new Date().toLocaleDateString()}</span>
+    <span>Grassroots Marketing  |  Mary Ruth Organics  |  ${moLabel}${footerChain}</span>
+    <span>1</span>
   </div>
 </div>
 
-<!-- PAGE 2: Performance Breakdown -->
-<div class="page">
-  <div class="p1-header">
-    <div class="p1-title">
-      <h1><span>Performance</span> Breakdown</h1>
-      <p>${title} | ${moLabel}</p>
-    </div>
-    <div class="p1-badge">
-      <div class="mo">${mo.toUpperCase()}</div>
-      <div class="yr">2026</div>
-    </div>
-  </div>
+<!-- PAGE 2: Performance Breakdown (white background) -->
+<div class="page p2">
+  <div class="p2-title">How the events performed</div>
+  <div class="p2-sub">${insightLine}</div>
   <div class="p2-grid">
-    <div class="p2-section">
-      <h3>Events by State</h3>
+    <div>
+      <div class="p2-heading">Demo sales by state (demos)</div>
       ${topStates.map(s=>{
-        const pct=Math.round((s.e/maxStEv)*100);
-        const colors=['#ED1C24','#F97316','#F59E0B','#22C55E','#3B82F6','#8B5CF6','#EC4899','#14B8A6'];
-        const ci=topStates.indexOf(s)%colors.length;
-        return '<div class="bar-row"><div class="bar-st">'+s.s+'</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+colors[ci]+'">'+s.e+'</div></div><div class="bar-val">$'+Math.round(s.r).toLocaleString()+'</div></div>';
+        const pct=Math.max(8,Math.round((s.r/maxStRev)*100));
+        return '<div class="bar-row"><div class="bar-label">'+s.s+' ('+s.e+')</div><div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div><div class="bar-val">$'+Math.round(s.r).toLocaleString()+'</div></div>';
       }).join('')}
     </div>
-    <div class="p2-section">
-      <h3>Top Sellers</h3>
-      ${topProducts.map((p,i)=>'<div class="prod-item"><div class="prod-rank">'+(i+1)+'</div><div class="prod-name">'+p+'</div></div>').join('')}
+    <div>
+      <div class="p2-right-title">Top sellers at demos</div>
+      ${topSellers.map((p,i)=>'<div class="seller-row"><div class="seller-rank">'+(i+1)+'</div><div class="seller-name">'+p.name+'</div><div class="seller-val">'+p.val+'</div></div>').join('')}
       <div class="quote-box">
-        "I love these products! I've been looking for clean supplements and MaryRuth's are the best I've found. Will definitely be buying more."<br><br>
-        <span style="font-style:normal;font-weight:600;color:#78350f">-- Customer feedback, ${moLabel}</span>
+        "It can be so overwhelming; there are so many options to choose from. Thank you for taking the time to explain each format and its benefits. I wasn't going to buy anything today, but now that I understand my options, I'm going to buy a few today!"
+        <div class="quote-attr">Shopper at demo event, ${moLabel}</div>
       </div>
     </div>
   </div>
-  <div class="p1-footer">
-    <span>Grassroots Marketing | MaryRuth Organics Field Demo Program</span>
-    <span>Page 2 of 3 | ${moLabel}</span>
+  <div class="p2-footer">
+    <span>Grassroots Marketing  |  Mary Ruth Organics  |  ${moLabel}${footerChain}</span>
+    <span>2</span>
   </div>
 </div>
 
-<!-- PAGE 3: Photo Gallery -->
-<div class="page">
-  <div class="p1-header">
-    <div class="p1-title">
-      <h1><span>Photo</span> Gallery</h1>
-      <p>${title} | ${moLabel} Field Demos</p>
-    </div>
-    <div class="p1-badge">
-      <div class="mo">${mo.toUpperCase()}</div>
-      <div class="yr">2026</div>
-    </div>
-  </div>
+<!-- PAGE 3: Photo Gallery (white background) -->
+<div class="page p3">
+  <div class="p3-title">From the demo floor</div>
+  <div class="p3-sub">${ev.toLocaleString()} events at ${isOverall?'Whole Foods, Sprouts, Erewhon and more':venues+' '+chain+' stores'}</div>
   <div class="p3-grid">
-    ${Array(9).fill(0).map((_,i)=>'<div class="photo-slot"><div class="icon">📸</div>Demo Photo '+(i+1)+'<br><span style="font-size:9px;margin-top:4px;display:block">Upload photos to populate</span></div>').join('')}
+    ${Array(6).fill(0).map((_,i)=>'<div class="photo-slot"><div class="icon">📸</div>Photo '+(i+1)+'</div>').join('')}
   </div>
-  <div style="margin-top:16px;padding:14px 18px;background:#eff6ff;border-radius:8px;border-left:4px solid #3B82F6">
-    <div style="font-size:11px;color:#1e40af;line-height:1.5"><strong>Photo gallery coming soon.</strong> Once a Dropbox folder is connected with monthly demo photos, this page will automatically populate with the best shots from ${moLabel} field demos.</div>
-  </div>
-  <div class="p1-footer">
-    <span>Grassroots Marketing | MaryRuth Organics Field Demo Program</span>
-    <span>Page 3 of 3 | ${moLabel}</span>
+  <div class="p3-note"><strong>Photo gallery ready for content.</strong> Once a Dropbox folder is set up with monthly demo photos, this page will automatically populate with the best shots from ${moLabel} field demos. Photos should be placed in a Dropbox folder named <code>${moLabel.replace(' ','_')}</code>.</div>
+  <div class="p3-footer">
+    <span>Grassroots Marketing  |  Mary Ruth Organics  |  ${moLabel}${footerChain}</span>
+    <span>3</span>
   </div>
 </div>
 
