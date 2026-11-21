@@ -2439,7 +2439,7 @@ async function generatePDF(data,mo,fullMonth){
   
   // Build the 3-page HTML
   const container=document.createElement('div');
-  container.style.cssText='position:absolute;left:-9999px;top:0';
+  container.style.cssText='position:fixed;left:0;top:0;z-index:99999;background:#fff;overflow:auto;width:11in;height:100vh';
   container.innerHTML=`
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
