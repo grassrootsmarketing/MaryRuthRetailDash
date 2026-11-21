@@ -10,6 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--r:#ED1C24;--rd:#C41920;--rl:rgba(237,28,36,.08);--bg:#0F1117;--sf:#1A1D27;--sfh:#22252F;--bd:#2A2D38;--tx:#E8E9ED;--td:#8B8E9A;--tm:#5C5F6E;--g:#22C55E;--a:#F59E0B;--b:#3B82F6;--rad:12px}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -2439,12 +2440,11 @@ async function generatePDF(data,mo,fullMonth){
   
   // Build the 3-page HTML
   const container=document.createElement('div');
-  container.style.cssText='position:fixed;left:0;top:0;z-index:99999;background:#fff;overflow:auto;width:11in;height:100vh';
+  container.style.cssText='position:fixed;left:0;top:0;z-index:99999;background:#fff;overflow:visible;width:1056px';
   container.innerHTML=`
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-.rpt-page{width:11in;height:8.5in;position:relative;overflow:hidden;font-family:'Source Sans Pro',sans-serif;color:#1a1a1a}
+.rpt-page{width:1056px;height:816px;position:relative;overflow:hidden;font-family:'Source Sans Pro',sans-serif;color:#1a1a1a}
 .rpt-p1{background:#1a3a2a;color:#fff;padding:52px 60px 40px}
 .rpt-p1 h1{font-family:'Playfair Display',serif;font-size:38px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:10px}
 .rpt-p1-sub{font-size:16px;color:rgba(255,255,255,.55);margin-bottom:40px;font-weight:300}
@@ -2537,30 +2537,31 @@ async function generatePDF(data,mo,fullMonth){
 
   document.body.appendChild(container);
   
-  // Wait for fonts to load
+  // Wait for fonts and rendering
   await document.fonts.ready;
-  await new Promise(r=>setTimeout(r,300));
+  await new Promise(r=>setTimeout(r,800));
   
-  // Generate PDF from each page
   const filename='MRO Demo Report '+fullMonth+' 2026'+(isOverall?'':' '+chain.replace(/\s+/g,' '))+'.pdf';
-
-  // Add CSS page breaks between pages so html2pdf paginates correctly
-  const rptPages=container.querySelectorAll('.rpt-page');
-  rptPages.forEach((p,i)=>{
-    if(i<rptPages.length-1)p.style.pageBreakAfter='always';
-    p.style.width='11in';p.style.height='8.5in';
-  });
-
-  await html2pdf().set({
+  const pages=container.querySelectorAll('.rpt-page');
+  
+  // Render page 1 via html2pdf worker to get a jsPDF doc
+  const worker=html2pdf().set({
     margin:0,
-    filename:filename,
     image:{type:'jpeg',quality:0.95},
-    html2canvas:{scale:2,useCORS:true,logging:false},
-    jsPDF:{unit:'in',format:'letter',orientation:'landscape'},
-    pagebreak:{mode:['css']}
-  }).from(container).save();
-
-  // Clean up
+    html2canvas:{scale:2,useCORS:true,logging:false,width:1056,height:816,backgroundColor:'#ffffff'},
+    jsPDF:{unit:'px',format:[1056,816],orientation:'landscape',hotfixes:['px_scaling']}
+  });
+  const pdfDoc=await worker.from(pages[0]).toContainer().toCanvas().toPdf().get('pdf');
+  
+  // Add remaining pages
+  for(let i=1;i<pages.length;i++){
+    pdfDoc.addPage([1056,816],'landscape');
+    const canvas=await html2canvas(pages[i],{scale:2,useCORS:true,logging:false,width:1056,height:816,backgroundColor:'#ffffff'});
+    const imgData=canvas.toDataURL('image/jpeg',0.95);
+    pdfDoc.addImage(imgData,'JPEG',0,0,1056,816);
+  }
+  
+  pdfDoc.save(filename);
   container.remove();
 }
 
