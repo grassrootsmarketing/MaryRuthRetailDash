@@ -2350,12 +2350,13 @@ function generateMonthlyReports(){
   if(!selected.length){alert('Select at least one report.');return;}
   document.getElementById('reportModal').style.display='none';
   const MF=window._mf||{};
-  const months=MF.months||M26;
-  const mIdx=months.indexOf(mo);
+  // Always use hardcoded M26 for index lookup (cloud data may have fewer months)
+  const mIdx=M26.indexOf(mo);
 
   function getChainData(chain,mo){
     let ev=0,sa=0,un=0,sh=0,stData=[],moLabel=mo+' 2026';
     if(chain==='Overall'){
+      // Try cloud data first, then fall back to hardcoded
       if(MF.monthly&&MF.monthly[mo]){const md=MF.monthly[mo];ev=md.ev;sa=md.sa;un=md.un;sh=md.sh;}
       else if(mIdx>=0){ev=d26.ev[mIdx];sa=d26.sa[mIdx];un=d26.un[mIdx];sh=d26.sh[mIdx];}
       if(MF.stByMonth&&MF.stByMonth[mo])stData=MF.stByMonth[mo];
