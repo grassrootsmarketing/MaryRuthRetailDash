@@ -1560,7 +1560,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <div>
             <div style="font-size:18px;font-weight:800;color:var(--tx)" id="projTitle">📅 March 2026 \u2014 355 Events Scheduled</div>
-            <div style="font-size:12px;color:var(--td);margin-top:4px" id="projSubtitle">Across 15 states \u00b7 331 confirmed \u00b7 2 need BA assignment</div>
+            <div style="font-size:12px;color:var(--td);margin-top:4px" id="projSubtitle">Across 15 states · 331 confirmed · 2 need BA assignment</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <label class="upload-btn" for="schedUpload" style="background:rgba(249,115,22,.15);border-color:rgba(249,115,22,.4)">
@@ -2120,7 +2120,7 @@ function setProjMonth(mo){
   }else{
     // SCHEDULE MODE - restore the default schedule view
     document.getElementById('projTitle').textContent='📅 March 2026 \u2014 355 Events Scheduled';
-    document.getElementById('projSubtitle').textContent='Across 15 states \u00b7 331 confirmed \u00b7 2 need BA assignment';
+    document.getElementById('projSubtitle').textContent='Across 15 states · 331 confirmed · 2 need BA assignment';
     document.getElementById('projTotalEv').textContent='355';
     document.getElementById('projEvLabel').textContent='Scheduled Events';
     document.getElementById('projRevOrConf').textContent='331';
@@ -3158,7 +3158,7 @@ function openReport(data,mo){
   const {ev,sa,un,sh,netUn,avgSales,upe,unitsPer100,stData,moLabel,chain,venues,nStates,hours,ambassadors,salesPerHour,products,quote}=data;
   const isOverall=chain==='Overall';
   const fullMonth={'Jan':'January','Feb':'February','Mar':'March','Apr':'April','May':'May','Jun':'June','Jul':'July','Aug':'August','Sep':'September','Oct':'October','Nov':'November','Dec':'December'}[mo]||mo;
-  const subtitleLine=isOverall?fullMonth+' 2026 \u00b7 Prepared by Grassroots Marketing':fullMonth+' 2026 \u00b7 '+chain+' only \u00b7 Prepared by Grassroots Marketing';
+  const subtitleLine=isOverall?fullMonth+' 2026 · Prepared by Grassroots Marketing':fullMonth+' 2026 · '+chain+' only · Prepared by Grassroots Marketing';
   const footerChain=isOverall?'':'  |  '+chain+' only';
   const topStates=(stData||[]).slice(0,8).sort((a,b)=>b.r-a.r);
   const maxStRev=topStates.length?Math.max(...topStates.map(s=>s.r)):1;
@@ -3259,7 +3259,7 @@ body{font-family:'Source Sans Pro',sans-serif;background:#fff;color:#1a1a1a;-web
       <div class="p2-right-title">Top sellers at demos${topProds.length&&topProds[0].u?' (units sold)':''}</div>
       ${topProds.map((p,i)=>'<div class="seller-row"><div class="seller-rank">'+(i+1)+'</div><div class="seller-name">'+p.n+'</div><div class="seller-val">'+p.u+' units</div></div>').join('')}
       <div class="quote-box">
-        \u201c${quote.q}\u201d
+        “${quote.q}”
         <div class="quote-attr">Shopper at ${quote.v}${quote.s?', '+quote.s:''}</div>
       </div>
     </div>
@@ -3272,7 +3272,7 @@ body{font-family:'Source Sans Pro',sans-serif;background:#fff;color:#1a1a1a;-web
   <h1>From the demo floor</h1>
   <div class="p3-sub">${ev.toLocaleString()} events at ${isOverall?'Whole Foods, Sprouts, Erewhon and more':venues+' '+chain+' stores'}</div>
   <div class="p3-grid">
-    ${Array(6).fill(0).map((_,i)=>'<div class="ps"><div class="ico">\ud83d\udcf8</div>Demo Photo '+(i+1)+'</div>').join('')}
+    ${Array(6).fill(0).map((_,i)=>'<div class="ps"><div class="ico">📸</div>Demo Photo '+(i+1)+'</div>').join('')}
   </div>
   <div class="p3-note"><strong>Photo gallery ready for content.</strong> Once demo photos are uploaded to a shared Dropbox folder for ${fullMonth} 2026, this page will automatically populate with field demo photos.</div>
   <div class="p3-footer"><span>Grassroots Marketing  |  Mary Ruth Organics  |  ${fullMonth} 2026${footerChain}</span><span>3</span></div>
