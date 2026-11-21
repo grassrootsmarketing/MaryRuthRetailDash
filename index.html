@@ -2542,24 +2542,24 @@ async function generatePDF(data,mo,fullMonth){
   await new Promise(r=>setTimeout(r,300));
   
   // Generate PDF from each page
-  const pages=container.querySelectorAll('.rpt-page');
   const filename='MRO Demo Report '+fullMonth+' 2026'+(isOverall?'':' '+chain.replace(/\s+/g,' '))+'.pdf';
-  
-  const opt={
+
+  // Add CSS page breaks between pages so html2pdf paginates correctly
+  const rptPages=container.querySelectorAll('.rpt-page');
+  rptPages.forEach((p,i)=>{
+    if(i<rptPages.length-1)p.style.pageBreakAfter='always';
+    p.style.width='11in';p.style.height='8.5in';
+  });
+
+  await html2pdf().set({
     margin:0,
     filename:filename,
-    image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true,logging:false,width:1056,height:816},
-    jsPDF:{unit:'in',format:'letter',orientation:'landscape'}
-  };
-  
-  const pdf=html2pdf().set(opt).from(pages[0]).toPdf();
-  for(let i=1;i<pages.length;i++){
-    pdf.get('pdf').then(p=>p.addPage());
-    pdf.from(pages[i]).toContainer().toCanvas().toPdf();
-  }
-  await pdf.save();
-  
+    image:{type:'jpeg',quality:0.95},
+    html2canvas:{scale:2,useCORS:true,logging:false},
+    jsPDF:{unit:'in',format:'letter',orientation:'landscape'},
+    pagebreak:{mode:['css']}
+  }).from(container).save();
+
   // Clean up
   container.remove();
 }
