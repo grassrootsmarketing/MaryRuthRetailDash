@@ -2441,6 +2441,11 @@ async function generatePDF(data,mo,fullMonth){
   // Build the 3-page HTML
   const container=document.createElement('div');
   container.style.cssText='position:fixed;left:0;top:0;z-index:99999;background:#fff;overflow:visible;width:1056px';
+  // Loading overlay so user doesn't see raw HTML flash
+  const rptOverlay=document.createElement('div');
+  rptOverlay.style.cssText='position:fixed;inset:0;z-index:100000;background:rgba(15,17,23,.92);display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif';
+  rptOverlay.innerHTML='<div style="text-align:center"><div style="width:48px;height:48px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:rptSpin 1s linear infinite;margin:0 auto 16px"></div><div style="font-size:16px;font-weight:600">Generating PDF...</div><div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:6px">This may take a few seconds</div></div><style>@keyframes rptSpin{to{transform:rotate(360deg)}}</style>';
+  document.body.appendChild(rptOverlay);
   container.innerHTML=`
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -2543,29 +2548,27 @@ async function generatePDF(data,mo,fullMonth){
   
   const filename='MRO Demo Report '+fullMonth+' 2026'+(isOverall?'':' '+chain.replace(/\s+/g,' '))+'.pdf';
   
-  // Add page breaks between report pages
-  const rptPages=container.querySelectorAll('.rpt-page');
-  rptPages.forEach((p,i)=>{
-    if(i<rptPages.length-1){
-      p.style.pageBreakAfter='always';
-      p.style.marginBottom='0';
-    }
-  });
+  // Remove pages 2 and 3, render only page 1 to test
+  const allPages=container.querySelectorAll('.rpt-page');
+  const page1=allPages[0];
   
-  // Single html2pdf call with CSS page break mode
+  // Clear container and only keep page 1
+  container.innerHTML='';
+  container.appendChild(page1);
+  
   try{
     await html2pdf().set({
       margin:0,
       filename:filename,
       image:{type:'jpeg',quality:0.95},
-      html2canvas:{scale:2,useCORS:true,logging:false,backgroundColor:'#ffffff'},
-      jsPDF:{unit:'px',format:[1056,816],orientation:'landscape',hotfixes:['px_scaling']},
-      pagebreak:{mode:['css','legacy'],before:'.rpt-page-break'}
-    }).from(container).save();
+      html2canvas:{scale:2,useCORS:true,logging:false,backgroundColor:null},
+      jsPDF:{unit:'in',format:'letter',orientation:'landscape'}
+    }).from(page1).save();
   }catch(err){
     console.error('PDF generation error:',err);
     alert('PDF generation failed: '+err.message);
   }
+  if(rptOverlay)rptOverlay.remove();
   container.remove();
 }
 
